@@ -12,13 +12,14 @@ interface CarCardProps {
 }
 
 // Premium indicators and social proof
+// TODO: Wire all flags from CMS (Strapi) — currently placeholders
 const getCardPsychology = (car: Car, index: number = 0) => {
-  const isNew = index < 3
-  const isHot = car.price > 40000
-  const viewCount = 45 + (parseInt(car.id) * 7) % 50
-  const isLowStock = car.mileage < 10000
+  const isNew = false // TODO: Wire to CMS "new arrival" flag
+  const isHot = false // TODO: Wire to CMS featured/premium flag
+  const viewCount = null // No per-card tracking — wire from Strapi aggregate query later
+  const isLowMileage = false // TODO: Wire to CMS or threshold logic from settings
 
-  return { isNew, isHot, viewCount, isLowStock }
+  return { isNew, isHot, viewCount, isLowMileage }
 }
 
 export function CarCard({ car, index = 0 }: CarCardProps) {
@@ -59,14 +60,16 @@ export function CarCard({ car, index = 0 }: CarCardProps) {
             {car.condition}
           </Badge>
 
-          {/* Social proof - views */}
-          <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-black/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-zinc-700">
-            <Eye className="h-3 w-3 text-zinc-400" />
-            <span className="text-xs font-semibold text-zinc-300">{psychology.viewCount} views</span>
-          </div>
+          {/* View count — hidden until real data available from Strapi */}
+          {psychology.viewCount !== null && (
+            <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-black/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-zinc-700">
+              <Eye className="h-3 w-3 text-zinc-400" />
+              <span className="text-xs font-semibold text-zinc-300">{psychology.viewCount} views</span>
+            </div>
+          )}
 
           {/* Condition indicator */}
-          {psychology.isLowStock && (
+          {psychology.isLowMileage && (
             <div className="absolute bottom-3 right-3 flex items-center gap-2 bg-primary/90 backdrop-blur-sm px-3 py-1.5 rounded-full border border-primary">
               <Clock className="h-3 w-3 text-black" />
               <span className="text-xs font-bold text-black">LOW MILEAGE</span>

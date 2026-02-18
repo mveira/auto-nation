@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Car } from "@/data/cars"
 import { formatPrice, formatMileage } from "@/lib/utils"
-import { Zap, Award, TrendingUp, ArrowRight, Gauge, Calendar, Eye } from "lucide-react"
+import { Zap, Award, TrendingUp, ArrowRight, Gauge, Calendar } from "lucide-react"
+import { VehicleViewStats } from "@/components/VehicleViewTracker"
 import { FramerShowcase } from "./FramerShowcase"
 
 interface SpotlightVehicleProps {
@@ -74,10 +75,7 @@ export function SpotlightVehicle({ car }: SpotlightVehicleProps) {
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Eye className="h-3 w-3 md:h-4 md:w-4 text-primary" />
-                    <span className="text-xs md:text-sm text-zinc-400 whitespace-nowrap">High interest</span>
-                  </div>
+                  <VehicleViewStats vehicleKey={car.id} />
                   <Badge className="bg-primary/10 text-primary border-primary/30 text-xs whitespace-nowrap">
                     FEATURED
                   </Badge>

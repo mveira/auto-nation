@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Zap, TrendingUp, Award, ChevronLeft, ChevronRight, Filter } from "lucide-react"
 import { getFeaturedCars, getCars } from "@/services/cars.service"
+import { siteSettings } from "@/lib/siteSettings"
 
 interface HeroProps {
   filteredMake?: string
@@ -109,21 +110,24 @@ export function Hero({ filteredMake }: HeroProps) {
             <div className="bg-black/60 backdrop-blur-xl border border-zinc-800 p-2 sm:p-3 md:p-4 rounded-lg hover:border-primary/50 transition-all min-w-0">
               <div className="flex items-center gap-1 sm:gap-2 mb-1">
                 <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
-                <p className="text-lg sm:text-xl md:text-2xl font-black text-primary">40+</p>
+                {/* TODO: Wire to real inventory count from Strapi */}
+                <p className="text-lg sm:text-xl md:text-2xl font-black text-primary">{getCars().length}+</p>
               </div>
               <p className="text-[9px] sm:text-[10px] md:text-xs text-zinc-400 font-semibold leading-tight">QUALITY VEHICLES</p>
             </div>
             <div className="bg-black/60 backdrop-blur-xl border border-zinc-800 p-2 sm:p-3 md:p-4 rounded-lg hover:border-primary/50 transition-all min-w-0">
               <div className="flex items-center gap-1 sm:gap-2 mb-1">
                 <Zap className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
-                <p className="text-lg sm:text-xl md:text-2xl font-black text-primary">£1M+</p>
+                {/* TODO: Wire to real value from Strapi */}
+                <p className="text-lg sm:text-xl md:text-2xl font-black text-primary">{siteSettings.yearsInBusiness}</p>
               </div>
-              <p className="text-[9px] sm:text-[10px] md:text-xs text-zinc-400 font-semibold leading-tight">INVENTORY VALUE</p>
+              <p className="text-[9px] sm:text-[10px] md:text-xs text-zinc-400 font-semibold leading-tight">YEARS IN BUSINESS</p>
             </div>
             <div className="bg-black/60 backdrop-blur-xl border border-zinc-800 p-2 sm:p-3 md:p-4 rounded-lg hover:border-primary/50 transition-all min-w-0">
               <div className="flex items-center gap-1 sm:gap-2 mb-1">
                 <Award className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
-                <p className="text-lg sm:text-xl md:text-2xl font-black text-primary">4.9★</p>
+                {/* TODO: Wire to real rating from Strapi/Trustpilot */}
+                <p className="text-lg sm:text-xl md:text-2xl font-black text-primary">{siteSettings.customerRating ?? "—"}</p>
               </div>
               <p className="text-[9px] sm:text-[10px] md:text-xs text-zinc-400 font-semibold leading-tight">CUSTOMER RATING</p>
             </div>
@@ -151,7 +155,7 @@ export function Hero({ filteredMake }: HeroProps) {
           <div className="flex flex-wrap gap-3 md:gap-4 text-[10px] md:text-xs text-zinc-400">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></div>
-              <span className="whitespace-nowrap">{filteredMake ? `${featuredCars.length} ${filteredMake.toUpperCase()}` : "40 VEHICLES"} IN STOCK</span>
+              <span className="whitespace-nowrap">{filteredMake ? `${featuredCars.length} ${filteredMake.toUpperCase()}` : `${getCars().length} VEHICLES`} IN STOCK</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>

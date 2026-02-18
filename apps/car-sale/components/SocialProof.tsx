@@ -1,5 +1,6 @@
 import { Star, Quote } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { siteSettings } from "@/lib/siteSettings"
 
 export function SocialProof() {
   const testimonials = [
@@ -30,15 +31,18 @@ export function SocialProof() {
     <section className="py-20 px-4 bg-gradient-to-b from-zinc-900 to-black border-y border-zinc-800">
       <div className="container mx-auto">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-3 rounded-full mb-6">
-            <Star className="h-5 w-5 text-primary fill-primary" />
-            <span className="font-black text-xl">4.9 OUT OF 5</span>
-            <Star className="h-5 w-5 text-primary fill-primary" />
-          </div>
+          {/* TODO: Wire to real rating from Strapi/Trustpilot */}
+          {siteSettings.customerRating && (
+            <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-3 rounded-full mb-6">
+              <Star className="h-5 w-5 text-primary fill-primary" />
+              <span className="font-black text-xl">{siteSettings.customerRating} OUT OF 5</span>
+              <Star className="h-5 w-5 text-primary fill-primary" />
+            </div>
+          )}
           <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter">
             TRUSTED BY <span className="text-primary">ENTHUSIASTS</span>
           </h2>
-          <p className="text-zinc-400 text-lg">Over 5,000 satisfied customers</p>
+          <p className="text-zinc-400 text-lg">Real feedback from real buyers</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
@@ -73,14 +77,17 @@ export function SocialProof() {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <p className="text-zinc-500 text-sm">
-            Read all reviews on{" "}
-            <a href="#" className="text-primary hover:underline font-semibold">
-              Trustpilot
-            </a>
-          </p>
-        </div>
+        {/* TODO: Wire reviewSourceUrl from Strapi */}
+        {siteSettings.reviewSourceUrl && (
+          <div className="text-center mt-12">
+            <p className="text-zinc-500 text-sm">
+              Read all reviews on{" "}
+              <a href={siteSettings.reviewSourceUrl} className="text-primary hover:underline font-semibold">
+                Trustpilot
+              </a>
+            </p>
+          </div>
+        )}
       </div>
     </section>
   )

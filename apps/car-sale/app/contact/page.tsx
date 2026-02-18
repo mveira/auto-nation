@@ -348,8 +348,9 @@ export default function ContactPage() {
                 <p className="text-xs text-zinc-400">WhatsApp Support</p>
               </div>
               <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 text-center">
-                <p className="text-2xl font-black text-primary mb-1">5,000+</p>
-                <p className="text-xs text-zinc-400">Happy Customers</p>
+                {/* TODO: Wire to real customer count from Strapi */}
+                <p className="text-2xl font-black text-primary mb-1">25+</p>
+                <p className="text-xs text-zinc-400">Years in Business</p>
               </div>
             </div>
           </div>

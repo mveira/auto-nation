@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { Navigation } from "@/components/Navigation"
+import { siteSettings } from "@/lib/siteSettings"
 
 const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "600", "700", "900"] })
 
@@ -53,7 +54,7 @@ export default function RootLayout({
                 &copy; {new Date().getFullYear()} Car Nation. All rights reserved.
               </p>
               <p className="text-xs text-zinc-600 mt-2">
-                25+ years of trusted service
+                {siteSettings.yearsInBusiness} years of trusted service
               </p>
             </div>
           </div>

@@ -1,3 +1,15 @@
+/**
+ * Vehicle Detail Page — /cars/[id]
+ *
+ * Server component. Vehicle data loaded from local data layer (data/cars.ts).
+ * Future: fetch from Strapi by slug (route becomes /cars/[slug]).
+ *
+ * View tracking: VehicleViewTracker (client) calls POST /api/vehicle-view on mount.
+ * VehicleViewStats (client) reads counts via GET. Neither blocks SSR.
+ *
+ * CMS flags (isHighDemand, isLowMileage) are placeholder false — wire from Strapi.
+ * Form CTAs (schedule, WhatsApp) will route through GHL in a later phase.
+ */
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -7,6 +19,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CarCard } from "@/components/CarCard"
+import { VehicleViewTracker, VehicleViewStats } from "@/components/VehicleViewTracker"
 import {
   Fuel,
   Gauge,
@@ -19,10 +32,7 @@ import {
   Check,
   ArrowLeft,
   MessageCircle,
-  Eye,
-  Clock,
   Shield,
-  AlertCircle,
   TrendingUp,
   Zap,
 } from "lucide-react"
@@ -79,9 +89,9 @@ export default async function CarDetailPage({
     .slice(0, 3)
 
   // Premium indicators
-  const viewCount = 127 + (parseInt(car.id) * 13) % 100
-  const isHighDemand = car.price > 40000
-  const isLowMileage = car.mileage < 15000
+  // TODO: Wire from CMS flags (Strapi)
+  const isHighDemand = false
+  const isLowMileage = false
 
   // WhatsApp number
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "447123456789"
@@ -99,15 +109,8 @@ export default async function CarDetailPage({
 
   return (
     <>
-      {/* Premium info bar */}
-      <div className="bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 border-b border-zinc-800 py-2 px-4">
-        <div className="container mx-auto flex items-center justify-center gap-3 text-sm flex-wrap">
-          <Eye className="h-4 w-4 text-primary" />
-          <span className="font-semibold text-zinc-300">
-            <span className="text-primary">{viewCount}</span> views · Strong interest
-          </span>
-        </div>
-      </div>
+      {/* Real view tracking — calls API on mount, displays totalViews + viewingNow */}
+      <VehicleViewTracker vehicleKey={car.id} />
 
       <div className="container mx-auto px-4 py-12">
         <Link href="/inventory" className="inline-flex items-center text-sm mb-8 hover:text-primary font-semibold transition-colors group">
@@ -166,17 +169,8 @@ export default async function CarDetailPage({
               )}
             </div>
 
-            {/* Social proof */}
-            <div className="flex items-center gap-4 mb-4 text-sm text-zinc-400">
-              <div className="flex items-center gap-2">
-                <Eye className="h-4 w-4" />
-                <span>{viewCount} views</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                <span>Added this week</span>
-              </div>
-            </div>
+            {/* Real view stats — reads from same in-memory store */}
+            <VehicleViewStats vehicleKey={car.id} />
 
             <p className="text-zinc-400 mb-2 text-sm font-semibold uppercase tracking-wider">{car.year} • REF: #{car.id}</p>
             <h1 className="text-5xl md:text-6xl font-black mb-6 tracking-tighter leading-none">

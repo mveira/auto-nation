@@ -1,16 +1,12 @@
 import { Shield, Award, Users, Clock } from "lucide-react"
+import { siteSettings } from "@/lib/siteSettings"
 
 export function TrustBadges() {
   const badges = [
     {
       icon: Clock,
-      title: "25+ YEARS",
+      title: `${siteSettings.yearsInBusiness} YEARS`,
       description: "In Business",
-    },
-    {
-      icon: Users,
-      title: "5,000+",
-      description: "Happy Customers",
     },
     {
       icon: Award,
@@ -27,7 +23,7 @@ export function TrustBadges() {
   return (
     <div className="bg-zinc-900 py-16 px-4 border-y border-zinc-800">
       <div className="container mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-3 gap-8">
           {badges.map((badge, index) => (
             <div key={index} className="text-center group">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-colors border border-primary/20">
