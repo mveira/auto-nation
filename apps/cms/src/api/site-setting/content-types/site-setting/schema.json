@@ -1,0 +1,34 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-setting",
+    "pluralName": "site-settings",
+    "displayName": "Site Settings",
+    "description": "Global site configuration (stats, trust toggles)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "happyCustomersCount": {
+      "type": "integer"
+    },
+    "yearsInBusiness": {
+      "type": "integer"
+    },
+    "showTrustBadges": {
+      "type": "boolean",
+      "default": true
+    },
+    "showSocialProof": {
+      "type": "boolean",
+      "default": true
+    },
+    "soldVisibleDays": {
+      "type": "integer",
+      "default": 30
+    }
+  }
+}

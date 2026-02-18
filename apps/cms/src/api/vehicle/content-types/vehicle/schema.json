@@ -1,0 +1,97 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vehicles",
+  "info": {
+    "singularName": "vehicle",
+    "pluralName": "vehicles",
+    "displayName": "Vehicle",
+    "description": "Vehicle inventory managed via Auto Trader sync"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "externalId": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["live", "sold"],
+      "default": "live",
+      "required": true
+    },
+    "soldAt": {
+      "type": "datetime"
+    },
+    "firstSeenAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "lastSeenAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "featuredOrder": {
+      "type": "integer"
+    },
+    "make": {
+      "type": "string",
+      "required": true
+    },
+    "model": {
+      "type": "string",
+      "required": true
+    },
+    "year": {
+      "type": "integer",
+      "required": true
+    },
+    "price": {
+      "type": "decimal",
+      "required": true
+    },
+    "mileage": {
+      "type": "integer"
+    },
+    "fuelType": {
+      "type": "string"
+    },
+    "transmission": {
+      "type": "string"
+    },
+    "bodyType": {
+      "type": "string"
+    },
+    "colour": {
+      "type": "string"
+    },
+    "doors": {
+      "type": "integer"
+    },
+    "engineSize": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "images": {
+      "type": "json"
+    }
+  }
+}
