@@ -10,6 +10,59 @@ const trustItems = [
   { icon: MapPin, label: "Independent Bristol Garage" },
 ]
 
+function HeroVisual() {
+  return (
+    <div className="relative animate-in fade-in slide-in-from-bottom-6 duration-600 delay-150 fill-mode-both">
+      {/* Radial gold glow behind image */}
+      <div
+        className="absolute inset-0 rounded-2xl scale-95 blur-3xl pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)" }}
+        aria-hidden="true"
+      />
+
+      {/* Image container */}
+      <div className="relative rounded-2xl overflow-hidden shadow-lg shadow-primary/5 border border-border">
+        <Image
+          src="/images/service-hero.jpg"
+          alt="Qualified mechanic servicing a vehicle in a professional garage"
+          width={800}
+          height={600}
+          priority
+          className="w-full h-auto object-cover"
+        />
+
+        {/* Bottom gradient fade */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"
+          aria-hidden="true"
+        />
+
+        {/* Trust badge */}
+        <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/70 backdrop-blur-sm border border-primary/20 rounded-xl px-3 py-2">
+          <ShieldCheck className="h-4 w-4 text-primary flex-shrink-0" />
+          <span className="text-xs font-semibold text-zinc-200">Local Independent Garage</span>
+        </div>
+      </div>
+
+      {/* Mini stats row below image */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-5 px-1">
+        <div className="text-center">
+          <p className="text-xl sm:text-2xl font-black text-primary">20</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground">Years Experience</p>
+        </div>
+        <div className="text-center border-x border-border">
+          <p className="text-xl sm:text-2xl font-black text-primary">6</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground">Core Services</p>
+        </div>
+        <div className="text-center">
+          <p className="text-xl sm:text-2xl font-black text-primary">All</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground">Petrol &amp; Diesel</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
@@ -19,14 +72,16 @@ export function Hero() {
       </div>
 
       <div className="container mx-auto px-4 md:px-6 py-16 md:py-24 lg:py-28">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left — Content */}
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-600 fill-mode-both">
+        {/* Desktop: 2-column grid. Mobile: single column with order control. */}
+        <div className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
+
+          {/* Block 1: Headline + Description (always first) */}
+          <div className="order-1 animate-in fade-in slide-in-from-bottom-6 duration-600 fill-mode-both">
             <span className="inline-block text-sm font-semibold text-primary tracking-wide uppercase mb-3">
               Expert Car Repairs in Fishponds, Bristol
             </span>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] mb-4">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] lg:leading-[1.1] mb-4">
               Reliable Car Servicing{" "}
               <span className="relative inline-block">
                 <span className="relative z-10">&amp; Repairs</span>
@@ -41,15 +96,23 @@ export function Hero() {
               Clear pricing agreed before work starts — backed by a 3 month
               warranty on repairs. No surprises.
             </p>
-            <p className="text-xs text-muted-foreground mb-8 max-w-lg">
+            <p className="text-xs text-muted-foreground max-w-lg">
               *Promise applies to workmanship on completed repairs. Terms apply.
             </p>
+          </div>
 
+          {/* Block 2: Visual — between description and CTAs on mobile, right column on desktop */}
+          <div className="order-2 my-8 lg:my-0 lg:row-span-3">
+            <HeroVisual />
+          </div>
+
+          {/* Block 3: CTAs + Trust (below visual on mobile, continues left column on desktop) */}
+          <div className="order-3 animate-in fade-in slide-in-from-bottom-6 duration-600 fill-mode-both">
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-8">
+            <div className="grid grid-cols-2 sm:flex sm:flex-row gap-3 mb-8">
               <Link href="/book">
                 <Button size="lg" className="font-bold text-base w-full sm:w-auto">
-                  Book a Service
+                  Book Now
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -83,56 +146,6 @@ export function Hero() {
             <p className="text-xs text-muted-foreground mt-6">
               Serving Fishponds and surrounding Bristol areas.
             </p>
-          </div>
-
-          {/* Right — Visual */}
-          <div className="relative animate-in fade-in slide-in-from-bottom-6 duration-600 delay-150 fill-mode-both mt-8 lg:mt-0">
-            {/* Radial gold glow behind image */}
-            <div
-              className="absolute inset-0 rounded-2xl scale-95 blur-3xl pointer-events-none"
-              style={{ background: "radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)" }}
-              aria-hidden="true"
-            />
-
-            {/* Image container */}
-            <div className="relative rounded-2xl overflow-hidden shadow-lg shadow-primary/5 border border-border">
-              <Image
-                src="/images/service-hero.jpg"
-                alt="Qualified mechanic servicing a vehicle in a professional garage"
-                width={800}
-                height={600}
-                priority
-                className="w-full h-auto object-cover"
-              />
-
-              {/* Bottom gradient fade */}
-              <div
-                className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"
-                aria-hidden="true"
-              />
-
-              {/* Trust badge */}
-              <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/70 backdrop-blur-sm border border-primary/20 rounded-xl px-3 py-2">
-                <ShieldCheck className="h-4 w-4 text-primary flex-shrink-0" />
-                <span className="text-xs font-semibold text-zinc-200">Local Independent Garage</span>
-              </div>
-            </div>
-
-            {/* Mini stats row below image */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5 px-1">
-              <div className="text-center">
-                <p className="text-2xl font-black text-primary">20</p>
-                <p className="text-xs text-muted-foreground">Years Experience</p>
-              </div>
-              <div className="text-center sm:border-x border-border">
-                <p className="text-2xl font-black text-primary">6</p>
-                <p className="text-xs text-muted-foreground">Core Services</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-black text-primary">All</p>
-                <p className="text-xs text-muted-foreground">Petrol &amp; Diesel</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
