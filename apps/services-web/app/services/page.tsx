@@ -33,7 +33,7 @@ export default function ServicesPage() {
                       {service.shortDescription}
                     </CardDescription>
                   </div>
-                  <Link href="/book" className="flex-shrink-0">
+                  <Link href={`/book?service=${service.slug}`} className="flex-shrink-0">
                     <Button size="sm" className="font-bold">
                       Book
                       <ArrowRight className="ml-1 h-4 w-4" />

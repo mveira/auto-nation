@@ -28,7 +28,7 @@ export function Navigation() {
       <nav className="border-b border-zinc-800 bg-black/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-16 sm:h-20">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
               <span className="font-black text-xl sm:text-2xl tracking-tight">
                 CAR<span className="text-primary">NATION</span>
               </span>
@@ -41,7 +41,7 @@ export function Navigation() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="hover:text-primary transition-colors font-semibold tracking-wide hidden md:block"
+                  className="hover:text-primary transition-colors font-semibold tracking-wide hidden md:block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {link.label}
                 </Link>
@@ -49,7 +49,7 @@ export function Navigation() {
 
               <button
                 onClick={toggleMobileMenu}
-                className="md:hidden p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+                className="md:hidden p-2 hover:bg-zinc-800 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 aria-label="Toggle mobile menu"
               >
                 <Menu className="h-6 w-6" />
@@ -90,7 +90,7 @@ export function Navigation() {
                   <h2 className="text-xl font-bold text-primary">Menu</h2>
                   <button
                     onClick={closeMobileMenu}
-                    className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+                    className="p-2 hover:bg-zinc-800 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     aria-label="Close menu"
                   >
                     <X className="h-6 w-6" />
@@ -103,7 +103,7 @@ export function Navigation() {
                       key={link.href}
                       href={link.href}
                       onClick={closeMobileMenu}
-                      className="text-lg font-semibold hover:text-primary transition-colors tracking-wide"
+                      className="text-lg font-semibold hover:text-primary transition-colors tracking-wide rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
                       {link.label}
                     </Link>

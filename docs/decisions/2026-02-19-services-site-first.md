@@ -15,6 +15,9 @@ Prioritise building apps/services-web.
 - Services site becomes Phase 3 priority.
 - Shared UI extraction will happen after services site foundation is built.
 
+## Follow-Up
+- 2026-02-20: Service cards now deep-link to `/book?service=<slug>` with preselection on the booking form.
+
 ## Resume Condition
 Car-sale integration resumes once Auto Trader feed access is available.
 EOF

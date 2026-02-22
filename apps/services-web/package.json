@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
-    "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "validate:prod": "node -r dotenv/config scripts/validate-prod.ts",
+    "build": "npm run validate:prod && next build"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.0",

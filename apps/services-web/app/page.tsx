@@ -20,27 +20,27 @@ export default function HomePage() {
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary mb-4">
                 <Wrench className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-lg mb-2">Quality Work</h3>
+              <h3 className="font-bold text-lg mb-2">20 Years Experience</h3>
               <p className="text-muted-foreground text-sm font-light">
-                Experienced technicians using quality parts. Every job done properly, first time.
+                Two decades of hands-on mechanical experience across all petrol and diesel makes.
               </p>
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary mb-4">
                 <Shield className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-lg mb-2">Transparent Pricing</h3>
+              <h3 className="font-bold text-lg mb-2">3 Month Repair Warranty</h3>
               <p className="text-muted-foreground text-sm font-light">
-                No hidden fees. We explain what needs doing and give you a clear price before any work starts.
+                Every repair is backed by a 3 month warranty and a 30 day money-back guarantee. No risk.
               </p>
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary mb-4">
                 <Clock className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-lg mb-2">Convenient Booking</h3>
+              <h3 className="font-bold text-lg mb-2">Independent Bristol Garage</h3>
               <p className="text-muted-foreground text-sm font-light">
-                Book online or call us. We work around your schedule to keep you on the road.
+                A local, independent garage in Fishponds. Fair pricing without the dealership markup.
               </p>
             </div>
           </div>
@@ -55,12 +55,11 @@ export default function HomePage() {
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service) => (
-              <Card key={service.slug} className="hover:border-primary/30 transition-colors">
-                <CardHeader>
-                  <CardTitle className="text-lg">{service.title}</CardTitle>
-                  <CardDescription>{service.shortDescription}</CardDescription>
-                </CardHeader>
-              </Card>
+              <Link
+                key={service.slug}
+                href={`/book?service=${service.slug}`}
+                className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              />
             ))}
           </div>
           <div className="text-center mt-10">

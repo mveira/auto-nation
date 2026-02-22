@@ -96,16 +96,29 @@ export default function ContactPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <Input name="name" placeholder="Your name" required />
-                <Input name="email" type="email" placeholder="Email address" required />
-                <Input name="phone" type="tel" placeholder="Phone number" required />
-                <textarea
-                  name="message"
-                  placeholder="How can we help?"
-                  required
-                  rows={4}
-                  className="flex w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                />
+                <div>
+                  <label htmlFor="contact-name" className="sr-only">Your name</label>
+                  <Input id="contact-name" name="name" placeholder="Your name" required />
+                </div>
+                <div>
+                  <label htmlFor="contact-email" className="sr-only">Email address</label>
+                  <Input id="contact-email" name="email" type="email" placeholder="Email address" required />
+                </div>
+                <div>
+                  <label htmlFor="contact-phone" className="sr-only">Phone number</label>
+                  <Input id="contact-phone" name="phone" type="tel" placeholder="Phone number" required />
+                </div>
+                <div>
+                  <label htmlFor="contact-message" className="sr-only">Message</label>
+                  <textarea
+                    id="contact-message"
+                    name="message"
+                    placeholder="How can we help?"
+                    required
+                    rows={4}
+                    className="flex w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                </div>
 
                 {formState === "sent" && (
                   <p className="text-sm text-green-500 font-medium">

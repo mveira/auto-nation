@@ -3,6 +3,8 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { Navigation } from "@/components/Navigation"
 import { Footer } from "@/components/Footer"
+import { MobileStickyCta } from "@/components/MobileStickyCta"
+import { buildAutoRepairJsonLd } from "@/lib/jsonld"
 
 const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "600", "700", "900"] })
 
@@ -16,12 +18,23 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const jsonLd = buildAutoRepairJsonLd()
+
   return (
     <html lang="en" className="dark">
+      <head>
+        {jsonLd && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+        )}
+      </head>
       <body className={inter.className}>
         <Navigation />
-        <main>{children}</main>
+        <main className="pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
         <Footer />
+        <MobileStickyCta />
       </body>
     </html>
   )

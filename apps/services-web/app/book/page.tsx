@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
@@ -8,7 +9,12 @@ import { getAllServices } from "@/services/services.service"
 
 export default function BookPage() {
   const [formState, setFormState] = useState<"idle" | "sending" | "sent" | "error">("idle")
+  const searchParams = useSearchParams()
   const services = getAllServices()
+
+  const serviceSlug = searchParams.get("service")
+  const preselected = services.find((s) => s.slug === serviceSlug)
+  const defaultService = preselected ? preselected.title : ""
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -63,34 +69,61 @@ export default function BookPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <Input name="name" placeholder="Your name" required />
-              <Input name="email" type="email" placeholder="Email address" required />
-              <Input name="phone" type="tel" placeholder="Phone number" required />
+              <div>
+                <label htmlFor="book-name" className="sr-only">Your name</label>
+                <Input id="book-name" name="name" placeholder="Your name" required />
+              </div>
+              <div>
+                <label htmlFor="book-email" className="sr-only">Email address</label>
+                <Input id="book-email" name="email" type="email" placeholder="Email address" required />
+              </div>
+              <div>
+                <label htmlFor="book-phone" className="sr-only">Phone number</label>
+                <Input id="book-phone" name="phone" type="tel" placeholder="Phone number" required />
+              </div>
 
-              <select
-                name="service"
-                required
-                className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="">Select a service</option>
-                {services.map((s) => (
-                  <option key={s.slug} value={s.title}>
-                    {s.title}
-                  </option>
-                ))}
-                <option value="Other">Other</option>
-              </select>
+              <div>
+                <label htmlFor="book-service" className="sr-only">Service required</label>
+                <select
+                  id="book-service"
+                  name="service"
+                  required
+                  defaultValue={defaultService}
+                  className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&:invalid]:text-muted-foreground"
+                >
+                  <option value="" disabled>Select a service</option>
+                  {services.map((s) => (
+                    <option key={s.slug} value={s.title}>
+                      {s.title}
+                    </option>
+                  ))}
+                  <option value="Other">Other</option>
+                </select>
+              </div>
 
-              <Input name="vehicle" placeholder="Vehicle (e.g. 2019 Ford Focus)" required />
-              <Input name="registration" placeholder="Registration number" />
-              <Input name="preferredDate" type="date" placeholder="Preferred date" />
+              <div>
+                <label htmlFor="book-vehicle" className="sr-only">Vehicle</label>
+                <Input id="book-vehicle" name="vehicle" placeholder="Vehicle (e.g. 2019 Ford Focus)" required />
+              </div>
+              <div>
+                <label htmlFor="book-registration" className="sr-only">Registration number</label>
+                <Input id="book-registration" name="registration" placeholder="Registration number" />
+              </div>
+              <div>
+                <label htmlFor="book-date" className="sr-only">Preferred date</label>
+                <Input id="book-date" name="preferredDate" type="date" aria-label="Preferred date" />
+              </div>
 
-              <textarea
-                name="notes"
-                placeholder="Any additional details or symptoms?"
-                rows={3}
-                className="flex w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              />
+              <div>
+                <label htmlFor="book-notes" className="sr-only">Additional notes</label>
+                <textarea
+                  id="book-notes"
+                  name="notes"
+                  placeholder="Any additional details or symptoms?"
+                  rows={3}
+                  className="flex w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                />
+              </div>
 
               {formState === "sent" && (
                 <p className="text-sm text-green-500 font-medium">

@@ -18,7 +18,7 @@ const SERVICES: Service[] = [
   {
     title: "MOT Testing",
     slug: "mot-testing",
-    shortDescription: "Annual MOT test to ensure your vehicle meets road safety and environmental standards.",
+    shortDescription: "Annual MOT test to ensure your vehicle meets road safety and environmental standards. MOT certification currently in progress.",
   },
   {
     title: "Brake Repairs",
