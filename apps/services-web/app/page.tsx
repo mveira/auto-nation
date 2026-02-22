@@ -47,26 +47,40 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Services Preview */}
+      {/* Service Highlights */}
       <section className="py-16 px-4 border-t border-border">
         <div className="container mx-auto">
           <h2 className="text-3xl md:text-4xl font-black tracking-tight text-center mb-12">
             Our <span className="text-primary">Services</span>
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {services.slice(0, 4).map((service) => (
               <Link
                 key={service.slug}
                 href={`/book?service=${service.slug}`}
                 className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              />
+              >
+                <Card className="hover:border-primary/30 hover:-translate-y-1 transition-all duration-200 h-full">
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-base">{service.title}</CardTitle>
+                    <CardDescription className="text-sm line-clamp-2">
+                      {service.shortDescription}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
             ))}
           </div>
-          <div className="text-center mt-10">
+          <div className="text-center mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link href="/services">
+              <Button size="lg" variant="outline" className="font-bold">
+                View All Services
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
             <Link href="/book">
               <Button size="lg" className="font-bold">
                 Book a Service
-                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>
