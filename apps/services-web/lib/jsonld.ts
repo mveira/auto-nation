@@ -65,15 +65,15 @@ export function buildAutoRepairJsonLd() {
     description:
       "Independent car servicing, repairs, and MOT testing in Fishponds, Bristol. Clear pricing and a repair warranty.",
     url: siteUrl ?? "http://localhost:3000",
-    telephone: phone ?? "+440000000000",
+    telephone: phone ?? "",
     priceRange: "££",
     image: `${siteUrl ?? "http://localhost:3000"}/images/service-hero.jpg`,
     address: {
       "@type": "PostalAddress",
-      streetAddress: street ?? "TBD",
-      addressLocality: city ?? "TBD",
-      addressRegion: region ?? "TBD",
-      postalCode: postcode ?? "TBD",
+      streetAddress: street ?? "",
+      addressLocality: city ?? "",
+      addressRegion: region ?? "",
+      postalCode: postcode ?? "",
       addressCountry: country ?? "GB",
     },
     geo: {

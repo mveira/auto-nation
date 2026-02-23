@@ -8,16 +8,19 @@ const isProd = process.env.NODE_ENV === "production"
 const bizPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE
 const reviewRating = process.env.NEXT_PUBLIC_REVIEW_RATING
 const reviewCount = process.env.NEXT_PUBLIC_REVIEW_COUNT
+const yearsExp = process.env.NEXT_PUBLIC_YEARS_EXPERIENCE
+const warrantyMonths = process.env.NEXT_PUBLIC_WARRANTY_MONTHS
+const moneyBackDays = process.env.NEXT_PUBLIC_MONEYBACK_DAYS
 
 const phone = bizPhone ?? (isProd ? null : "+441171234567")
 const hasReviews = reviewRating && reviewCount
 
 const trustItems = [
-  { icon: ShieldCheck, label: "20 Years Experience" },
-  { icon: CheckCircle2, label: "3 Month Repair Warranty" },
-  { icon: Timer, label: "30-Day Money-Back Promise*" },
+  yearsExp ? { icon: ShieldCheck, label: `${yearsExp} Years Experience` } : null,
+  warrantyMonths ? { icon: CheckCircle2, label: `${warrantyMonths} Month Repair Warranty` } : null,
+  moneyBackDays ? { icon: Timer, label: `${moneyBackDays}-Day Money-Back Promise*` } : null,
   { icon: MapPin, label: "Independent Bristol Garage" },
-]
+].filter(Boolean) as { icon: typeof ShieldCheck; label: string }[]
 
 function phoneTelHref(raw: string) {
   return `tel:${raw.replace(/\s+/g, "")}`
@@ -59,10 +62,12 @@ function HeroVisual() {
 
       {/* Mini stats row below image */}
       <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-5 px-1">
+        {yearsExp && (
         <div className="text-center">
-          <p className="text-xl sm:text-2xl font-black text-primary">20</p>
+          <p className="text-xl sm:text-2xl font-black text-primary">{yearsExp}</p>
           <p className="text-[10px] sm:text-xs text-muted-foreground">Years Experience</p>
         </div>
+        )}
         <div className="text-center border-x border-border">
           <p className="text-xl sm:text-2xl font-black text-primary">6</p>
           <p className="text-[10px] sm:text-xs text-muted-foreground">Core Services</p>
@@ -106,12 +111,13 @@ export function Hero() {
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground font-light mb-2 max-w-lg">
-              Clear pricing agreed before work starts — backed by a 3 month
-              warranty on repairs. No surprises.
+              Clear pricing agreed before work starts{warrantyMonths ? ` — backed by a ${warrantyMonths} month warranty on repairs` : ""}. No surprises.
             </p>
+            {moneyBackDays && (
             <p className="text-xs text-muted-foreground max-w-lg">
               *Promise applies to workmanship on completed repairs. Terms apply.
             </p>
+            )}
           </div>
 
           {/* Block 2: Visual — between description and CTAs on mobile, right column on desktop */}

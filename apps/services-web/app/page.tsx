@@ -5,8 +5,22 @@ import { ArrowRight, Wrench, Shield, Clock } from "lucide-react"
 import { Hero } from "@/components/Hero"
 import { getAllServices } from "@/services/services.service"
 
+const yearsExp = process.env.NEXT_PUBLIC_YEARS_EXPERIENCE
+const warrantyMonths = process.env.NEXT_PUBLIC_WARRANTY_MONTHS
+const moneyBackDays = process.env.NEXT_PUBLIC_MONEYBACK_DAYS
+
 export default function HomePage() {
   const services = getAllServices()
+
+  const whyUsItems = [
+    yearsExp
+      ? { icon: Wrench, title: `${yearsExp} Years Experience`, desc: `${yearsExp === "1" ? "A year" : yearsExp + " years"} of hands-on mechanical experience across all petrol and diesel makes.` }
+      : null,
+    warrantyMonths
+      ? { icon: Shield, title: `${warrantyMonths} Month Repair Warranty`, desc: `Every repair is backed by a ${warrantyMonths} month warranty${moneyBackDays ? ` and a ${moneyBackDays} day money-back guarantee` : ""}. No risk.` }
+      : null,
+    { icon: Clock, title: "Independent Bristol Garage", desc: "A local, independent garage in Fishponds. Fair pricing without the dealership markup." },
+  ].filter(Boolean) as { icon: typeof Wrench; title: string; desc: string }[]
 
   return (
     <>
@@ -15,34 +29,16 @@ export default function HomePage() {
       {/* Why Us */}
       <section className="py-16 px-4 border-t border-border">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary mb-4">
-                <Wrench className="h-6 w-6" />
+          <div className={`grid md:grid-cols-${whyUsItems.length} gap-8`}>
+            {whyUsItems.map((item) => (
+              <div key={item.title} className="text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary mb-4">
+                  <item.icon className="h-6 w-6" />
+                </div>
+                <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                <p className="text-muted-foreground text-sm font-light">{item.desc}</p>
               </div>
-              <h3 className="font-bold text-lg mb-2">20 Years Experience</h3>
-              <p className="text-muted-foreground text-sm font-light">
-                Two decades of hands-on mechanical experience across all petrol and diesel makes.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary mb-4">
-                <Shield className="h-6 w-6" />
-              </div>
-              <h3 className="font-bold text-lg mb-2">3 Month Repair Warranty</h3>
-              <p className="text-muted-foreground text-sm font-light">
-                Every repair is backed by a 3 month warranty and a 30 day money-back guarantee. No risk.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary mb-4">
-                <Clock className="h-6 w-6" />
-              </div>
-              <h3 className="font-bold text-lg mb-2">Independent Bristol Garage</h3>
-              <p className="text-muted-foreground text-sm font-light">
-                A local, independent garage in Fishponds. Fair pricing without the dealership markup.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>

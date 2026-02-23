@@ -86,24 +86,19 @@ Phase 6 (GHL wiring) — Not started
 - **MobileStickyCta** (`components/MobileStickyCta.tsx`) — fixed bottom CTA on mobile
 - **shadcn primitives** — `button`, `card`, `input`
 - **JSON-LD** (`lib/jsonld.ts`) — AutoRepair schema, all fields from env vars, null in prod if missing
-- **Env validation** (`scripts/validate-prod.ts`) — blocks build if placeholders detected
+- **Env validation** (`scripts/validate-prod.js`) — blocks `build:prod` if placeholders detected
 - **Netlify** (`netlify.toml`) — Next.js plugin, Node 18, security headers
 - **Design tokens** (`app/globals.css`) — gold primary, dark backgrounds, matches car-sale
 
 ### What's NOT built
-- `/services/[slug]` — individual service detail pages (ARCHITECTURE.md requires this)
 - Strapi integration — services are hardcoded in `services/services.service.ts`, not fetched from CMS
-- `sitemap.ts` — no sitemap generation
-- `robots.ts` — no robots.txt generation
 
 ### Placeholder content (must replace before deploy)
-- Phone: `07700 900123` (in contact page, footer, hero)
-- Address: `123 Fishponds Road, Fishponds, Bristol, BS16 3AN` (contact page, footer)
-- Email: `services@carnation.co.uk` (contact page)
-- Hero `4.9/5 Google Rating` — hardcoded in `components/Hero.tsx:131-134`, not env-driven
+- Dev fallback phone/address/email in Footer + Contact — guarded by `isProd`, won't render in prod
+- All trust claims (years, warranty, money-back) now env-driven — omitted if vars not set
 
-### Completeness: ~72%
-Functional UI and forms are done. Missing service detail pages, Strapi integration, SEO files, and real business details.
+### Completeness: ~90%
+UI, forms, SEO files, service detail pages, and env-driven trust claims are done. Missing Strapi integration.
 
 ## Strapi (apps/cms) status
 Strapi exists with content types:
@@ -168,6 +163,43 @@ Strapi sync uses:
 8) Deploy to Netlify — create second Netlify site, configure env vars using `validate-prod.ts` safety net
 9) Test forms end-to-end — verify `/api/contact` and `/api/book` deliver emails with real Resend config
 10) Wire cross-site navigation — add link to car-sale from services nav and vice versa (simple href, not shared component yet)
+
+## Deploy services-web to Netlify
+
+### Build command
+```
+npm run build:prod
+```
+This runs `validate:prod` (checks env vars for placeholders) then `next build`. Use `npm run build` locally to skip validation.
+
+### Required env vars
+| Variable | Example | Notes |
+|---|---|---|
+| `RESEND_API_KEY` | `re_xxxx` | Email delivery |
+| `EMAIL_FROM` | `noreply@yourdomain.com` | Verified Resend sender |
+| `EMAIL_TO` | `inbox@yourdomain.com` | Where form submissions land |
+| `NEXT_PUBLIC_SITE_URL` | `https://services.example.com` | Used in JSON-LD + sitemap |
+| `NEXT_PUBLIC_BUSINESS_NAME` | `Car Nation Services` | |
+| `NEXT_PUBLIC_BUSINESS_PHONE` | `+441234567890` | Real phone |
+| `NEXT_PUBLIC_BUSINESS_STREET` | `10 High Street` | Real address |
+| `NEXT_PUBLIC_BUSINESS_CITY` | `Fishponds, Bristol` | |
+| `NEXT_PUBLIC_BUSINESS_REGION` | `Bristol` | |
+| `NEXT_PUBLIC_BUSINESS_POSTCODE` | `BS16 3XX` | |
+| `NEXT_PUBLIC_BUSINESS_COUNTRY` | `GB` | |
+| `NEXT_PUBLIC_BUSINESS_LAT` | `51.4752` | |
+| `NEXT_PUBLIC_BUSINESS_LNG` | `-2.5281` | |
+| `NEXT_PUBLIC_YEARS_EXPERIENCE` | `20` | Trust claim — omit if unverified |
+| `NEXT_PUBLIC_WARRANTY_MONTHS` | `3` | Trust claim — omit if unverified |
+| `NEXT_PUBLIC_MONEYBACK_DAYS` | `30` | Trust claim — omit if unverified |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | `services@example.com` | Shown on contact page |
+
+**Optional:** `NEXT_PUBLIC_REVIEW_RATING`, `NEXT_PUBLIC_REVIEW_COUNT`, `NEXT_PUBLIC_REVIEW_BEST`, `NEXT_PUBLIC_HOURS_MON_FRI`, `NEXT_PUBLIC_HOURS_SAT`, `NEXT_PUBLIC_HOURS_SUN`
+
+### Testing forms (Resend)
+1. Set `RESEND_API_KEY` to a valid key from [resend.com](https://resend.com)
+2. On the free tier, `EMAIL_FROM` must be `onboarding@resend.dev` and `EMAIL_TO` must be the account owner's email
+3. Submit `/book` and `/contact` forms — check the Resend dashboard for delivery logs
+4. Verify `replyTo` is set to the submitter's email (so you can reply directly)
 
 ## Phase alignment note
 `ARCHITECTURE.md` has the original phase order (services-web = Phase 5). This context pack reflects the priority decision to build services-web as Phase 3. **This context pack owns phase order and status. ARCHITECTURE.md owns rules, tokens, and constraints.**
