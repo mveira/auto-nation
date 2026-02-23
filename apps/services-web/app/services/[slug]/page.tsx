@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { getAllServices, getServiceBySlug } from "@/services/services.service"
 
 type Props = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export function generateStaticParams() {
@@ -15,7 +15,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = params
+  const { slug } = await params
   const service = getServiceBySlug(slug)
   if (!service) return {}
   return {
@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function ServiceDetailPage({ params }: Props) {
-  const { slug } = params
+export default async function ServiceDetailPage({ params }: Props) {
+  const { slug } = await params
   const service = getServiceBySlug(slug)
   if (!service) notFound()
 
