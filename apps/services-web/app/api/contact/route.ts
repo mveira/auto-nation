@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { escapeHtml } from '@/lib/utils';
 
 let resend: Resend | null = null;
 
@@ -34,6 +35,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safePhone = escapeHtml(phone);
+    const safeMessage = escapeHtml(message).replace(/\n/g, '<br>');
+
     const { error } = await resendClient.emails.send({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       to: process.env.EMAIL_TO || 'your-email@example.com',
@@ -46,11 +52,11 @@ export async function POST(request: NextRequest) {
             <p style="margin: 4px 0 0;">New Contact Form Submission</p>
           </div>
           <div style="background: #f9f9f9; padding: 24px;">
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-            <p><strong>Phone:</strong> <a href="tel:${phone}">${phone}</a></p>
+            <p><strong>Name:</strong> ${safeName}</p>
+            <p><strong>Email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
+            <p><strong>Phone:</strong> <a href="tel:${safePhone}">${safePhone}</a></p>
             <p><strong>Message:</strong></p>
-            <p style="background: #fff; padding: 12px; border-left: 3px solid #D4AF37; border-radius: 4px;">${message.replace(/\n/g, '<br>')}</p>
+            <p style="background: #fff; padding: 12px; border-left: 3px solid #D4AF37; border-radius: 4px;">${safeMessage}</p>
           </div>
         </div>
       `,

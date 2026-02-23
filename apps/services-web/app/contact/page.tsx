@@ -6,6 +6,30 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Phone, Mail, MapPin } from "lucide-react"
 
+const isProd = process.env.NODE_ENV === "production"
+
+const bizPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE
+const bizEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL
+const bizStreet = process.env.NEXT_PUBLIC_BUSINESS_STREET
+const bizCity = process.env.NEXT_PUBLIC_BUSINESS_CITY
+const bizPostcode = process.env.NEXT_PUBLIC_BUSINESS_POSTCODE
+
+const devPhone = "07700 900123"
+const devEmail = "services@carnation.co.uk"
+const devStreet = "123 Fishponds Road"
+const devCity = "Fishponds, Bristol"
+const devPostcode = "BS16 3AN"
+
+const phone = bizPhone ?? (isProd ? null : devPhone)
+const email = bizEmail ?? (isProd ? null : devEmail)
+const street = bizStreet ?? (isProd ? null : devStreet)
+const city = bizCity ?? (isProd ? null : devCity)
+const postcode = bizPostcode ?? (isProd ? null : devPostcode)
+
+function phoneTelHref(raw: string) {
+  return `tel:${raw.replace(/\s+/g, "")}`
+}
+
 export default function ContactPage() {
   const [formState, setFormState] = useState<"idle" | "sending" | "sent" | "error">("idle")
 
@@ -52,40 +76,47 @@ export default function ContactPage() {
         <div className="grid md:grid-cols-5 gap-8">
           {/* Contact Info */}
           <div className="md:col-span-2 space-y-6">
-            <div className="flex items-start gap-4">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary flex-shrink-0">
-                <Phone className="h-5 w-5" />
+            {phone && (
+              <div className="flex items-start gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary flex-shrink-0">
+                  <Phone className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold mb-1">Phone</h3>
+                  <a href={phoneTelHref(phone)} className="text-muted-foreground text-sm hover:text-primary transition-colors">
+                    {phone}
+                  </a>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold mb-1">Phone</h3>
-                {/* TODO: Replace with real phone number */}
-                <p className="text-muted-foreground text-sm">07700 900123</p>
+            )}
+            {email && (
+              <div className="flex items-start gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary flex-shrink-0">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold mb-1">Email</h3>
+                  <a href={`mailto:${email}`} className="text-muted-foreground text-sm hover:text-primary transition-colors">
+                    {email}
+                  </a>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary flex-shrink-0">
-                <Mail className="h-5 w-5" />
+            )}
+            {street && city && postcode && (
+              <div className="flex items-start gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary flex-shrink-0">
+                  <MapPin className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold mb-1">Address</h3>
+                  <p className="text-muted-foreground text-sm">
+                    {street}<br />
+                    {city}<br />
+                    {postcode}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold mb-1">Email</h3>
-                {/* TODO: Replace with real email */}
-                <p className="text-muted-foreground text-sm">services@carnation.co.uk</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary flex-shrink-0">
-                <MapPin className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-bold mb-1">Address</h3>
-                {/* TODO: Replace with real address */}
-                <p className="text-muted-foreground text-sm">
-                  123 Fishponds Road<br />
-                  Fishponds, Bristol<br />
-                  BS16 3AN
-                </p>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Form */}

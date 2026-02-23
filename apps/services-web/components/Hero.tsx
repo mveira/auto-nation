@@ -3,12 +3,25 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, CheckCircle2, ShieldCheck, Timer, MapPin, Phone, Star } from "lucide-react"
 
+const isProd = process.env.NODE_ENV === "production"
+
+const bizPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE
+const reviewRating = process.env.NEXT_PUBLIC_REVIEW_RATING
+const reviewCount = process.env.NEXT_PUBLIC_REVIEW_COUNT
+
+const phone = bizPhone ?? (isProd ? null : "+441171234567")
+const hasReviews = reviewRating && reviewCount
+
 const trustItems = [
   { icon: ShieldCheck, label: "20 Years Experience" },
   { icon: CheckCircle2, label: "3 Month Repair Warranty" },
   { icon: Timer, label: "30-Day Money-Back Promise*" },
   { icon: MapPin, label: "Independent Bristol Garage" },
 ]
+
+function phoneTelHref(raw: string) {
+  return `tel:${raw.replace(/\s+/g, "")}`
+}
 
 function HeroVisual() {
   return (
@@ -116,22 +129,26 @@ export function Hero() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <a href="tel:01171234567">
-                <Button size="lg" variant="outline" className="font-bold text-base w-full sm:w-auto">
-                  <Phone className="mr-2 h-4 w-4" />
-                  Call Now
-                </Button>
-              </a>
+              {phone && (
+                <a href={phoneTelHref(phone)}>
+                  <Button size="lg" variant="outline" className="font-bold text-base w-full sm:w-auto">
+                    <Phone className="mr-2 h-4 w-4" />
+                    Call Now
+                  </Button>
+                </a>
+              )}
             </div>
 
-            {/* Social proof */}
-            <div className="flex items-center gap-1.5 mb-6">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-              ))}
-              <span className="ml-1.5 text-sm font-semibold">4.9/5</span>
-              <span className="text-sm text-muted-foreground">Google Rating</span>
-            </div>
+            {/* Social proof — only rendered when real review data is configured */}
+            {hasReviews && (
+              <div className="flex items-center gap-1.5 mb-6">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                ))}
+                <span className="ml-1.5 text-sm font-semibold">{reviewRating}/5</span>
+                <span className="text-sm text-muted-foreground">Google Rating</span>
+              </div>
+            )}
 
             {/* Trust stack */}
             <div className="flex flex-wrap gap-x-5 gap-y-3">
