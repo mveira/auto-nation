@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run build:prod"
   publish = ".next"
 
 [[plugins]]
@@ -7,12 +7,6 @@
 
 [build.environment]
   NODE_VERSION = "18"
-
-[[redirects]]
-  from = "/*"
-  to = "/404"
-  status = 404
-  force = false
 
 [[headers]]
   for = "/*"

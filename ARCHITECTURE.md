@@ -48,10 +48,19 @@ Avoid “exclusive”, “elite”, or performance-only language.
 
 ---
 
+## GHL Integration Contract
+
+All CRM logic and automation boundaries are defined in:
+`/GHL_INTERFACE_SPEC.md`
+
+This file defines the data model, workflow contracts, and integration endpoints.
+
 ## Design System Tokens (Locked)
 
 Both `car-sale` and `services-web` MUST use identical design tokens.
 Tokens must be defined centrally (Tailwind config or shared theme file). Avoid hard-coded one-off styles.
+
+--
 
 ### Color Palette (Everyday Cars/Vans)
 Primary Background:
