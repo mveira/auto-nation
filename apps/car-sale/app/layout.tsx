@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { Navigation } from "@/components/Navigation"
 import { siteSettings } from "@/lib/siteSettings"
 
-const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "600", "700", "900"] })
+const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "600", "700", "900"], variable: "--font-inter" })
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-display" })
 
 export const metadata: Metadata = {
   title: "Car Nation - Quality Used Cars & Vans",
@@ -18,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans`}>
         <Navigation />
         <main>{children}</main>
         <footer className="bg-black border-t border-zinc-800 text-white py-12 px-4">
