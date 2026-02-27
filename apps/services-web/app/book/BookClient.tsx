@@ -7,15 +7,26 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { getAllServices } from "@/services/services.service"
 import { FadeInSection } from "@/components/AnimatedSection"
+import { VehicleLookup } from "@/components/VehicleLookup"
+import type { VehicleData } from "@/lib/dvla"
 
 export default function BookClient() {
   const [formState, setFormState] = useState<"idle" | "sending" | "sent" | "error">("idle")
+  const [vehicle, setVehicle] = useState<VehicleData | null>(null)
   const searchParams = useSearchParams()
   const services = getAllServices()
 
   const serviceSlug = searchParams.get("service")
   const preselected = services.find((s) => s.slug === serviceSlug)
   const defaultService = preselected ? preselected.title : ""
+
+  function handleVehicleConfirm(v: VehicleData) {
+    setVehicle(v)
+  }
+
+  function handleVehicleReset() {
+    setVehicle(null)
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -42,6 +53,7 @@ export default function BookClient() {
 
       if (res.ok) {
         setFormState("sent")
+        setVehicle(null)
         form.reset()
       } else {
         setFormState("error")
@@ -51,6 +63,11 @@ export default function BookClient() {
     }
   }
 
+  // Build the vehicle description string for the hidden field
+  const vehicleDescription = vehicle
+    ? `${vehicle.yearOfManufacture ?? ""} ${vehicle.make} — ${vehicle.colour}, ${vehicle.fuelType}${vehicle.engineCapacity ? `, ${vehicle.engineCapacity}cc` : ""}`.trim()
+    : ""
+
   return (
     <section className="py-20 md:py-28 px-4">
       <div className="container mx-auto max-w-2xl">
@@ -59,7 +76,7 @@ export default function BookClient() {
             Book a <span className="text-primary">Service</span>
           </h1>
           <p className="text-muted-foreground text-center mb-12 font-light">
-            Fill in the form below and we'll confirm your booking.
+            Fill in the form below and we&apos;ll confirm your booking.
           </p>
         </FadeInSection>
 
@@ -68,11 +85,22 @@ export default function BookClient() {
             <CardHeader>
               <CardTitle>Booking Details</CardTitle>
               <CardDescription>
-                We'll get back to you to confirm availability and final pricing.
+                We&apos;ll get back to you to confirm availability and final pricing.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Vehicle lookup — replaces manual vehicle + registration fields */}
+                <div className="pb-2">
+                  <VehicleLookup
+                    onConfirm={handleVehicleConfirm}
+                    onReset={handleVehicleReset}
+                  />
+                  {/* Hidden fields carry the confirmed vehicle data into the form submission */}
+                  <input type="hidden" name="vehicle" value={vehicleDescription} />
+                  <input type="hidden" name="registration" value={vehicle?.vrm ?? ""} />
+                </div>
+
                 <div>
                   <label htmlFor="book-name" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Name</label>
                   <Input id="book-name" name="name" placeholder="Your name" required className="bg-black border-zinc-700 focus:border-primary h-12" />
@@ -106,14 +134,6 @@ export default function BookClient() {
                 </div>
 
                 <div>
-                  <label htmlFor="book-vehicle" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Vehicle</label>
-                  <Input id="book-vehicle" name="vehicle" placeholder="Vehicle (e.g. 2019 Ford Focus)" required className="bg-black border-zinc-700 focus:border-primary h-12" />
-                </div>
-                <div>
-                  <label htmlFor="book-registration" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Registration</label>
-                  <Input id="book-registration" name="registration" placeholder="Registration number" className="bg-black border-zinc-700 focus:border-primary h-12" />
-                </div>
-                <div>
                   <label htmlFor="book-date" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Preferred Date</label>
                   <Input id="book-date" name="preferredDate" type="date" className="bg-black border-zinc-700 focus:border-primary h-12" />
                 </div>
@@ -131,7 +151,7 @@ export default function BookClient() {
 
                 {formState === "sent" && (
                   <p className="text-sm text-green-500 font-medium">
-                    Booking request sent. We'll confirm your appointment shortly.
+                    Booking request sent. We&apos;ll confirm your appointment shortly.
                   </p>
                 )}
                 {formState === "error" && (
