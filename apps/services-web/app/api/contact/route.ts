@@ -20,6 +20,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
+    // GHL webhook — fire-and-forget, never blocks the response
+    const ghlUrl = process.env.GHL_WEBHOOK_CONTACT_URL;
+    if (ghlUrl) {
+      fetch(ghlUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'services-web',
+          type: 'enquiry',
+          page: '/contact',
+          submittedAt: new Date().toISOString(),
+          contact: { name, email, phone },
+          message,
+        }),
+      }).catch((err) => console.error('GHL contact webhook error:', err));
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });

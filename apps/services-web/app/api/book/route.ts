@@ -20,6 +20,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Required fields are missing' }, { status: 400 });
     }
 
+    // GHL webhook — fire-and-forget, never blocks the response
+    const ghlUrl = process.env.GHL_WEBHOOK_BOOK_URL;
+    if (ghlUrl) {
+      fetch(ghlUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'services-web',
+          type: 'booking',
+          page: '/book',
+          submittedAt: new Date().toISOString(),
+          contact: { name, email, phone },
+          booking: {
+            serviceSlug: service.toLowerCase().replace(/\s+/g, '-'),
+            serviceName: service,
+            vehicle,
+            registration: registration || '',
+            preferredDate: preferredDate || '',
+            notes: notes || '',
+          },
+        }),
+      }).catch((err) => console.error('GHL booking webhook error:', err));
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
