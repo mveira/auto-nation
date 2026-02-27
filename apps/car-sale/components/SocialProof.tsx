@@ -1,3 +1,5 @@
+"use client"
+
 import { Star, Quote } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { siteSettings } from "@/lib/siteSettings"

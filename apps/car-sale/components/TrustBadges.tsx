@@ -1,3 +1,5 @@
+"use client"
+
 import { Shield, Award, Users, Clock } from "lucide-react"
 import { siteSettings } from "@/lib/siteSettings"
 import { StaggerContainer, StaggerItem } from "@/components/AnimatedSection"

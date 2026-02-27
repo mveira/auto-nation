@@ -161,7 +161,7 @@ export function VehicleLookup({ onConfirm, onReset }: VehicleLookupProps) {
               </div>
             </div>
 
-            <div className="flex gap-3 mt-5">
+            <div className="flex flex-col sm:flex-row gap-3 mt-5">
               <Button onClick={handleConfirm} className="flex-1 font-bold">
                 <CheckCircle2 className="h-4 w-4 mr-2" />
                 Yes, this is my car

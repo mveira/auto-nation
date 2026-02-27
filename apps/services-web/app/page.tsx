@@ -38,8 +38,18 @@ export default function HomePage() {
       <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 
       {/* Why Us — elevated with card treatment */}
-      <section className="py-20 md:py-28 px-4 bg-zinc-950/50 bg-noise relative">
-        <div className="container mx-auto">
+      <section className="py-20 md:py-28 px-4 bg-zinc-950/50 bg-noise relative overflow-hidden">
+        {/* Subtle background image */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <img
+            src="/images/garage-workshop.jpg"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-[0.07]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/60 via-transparent to-zinc-950/60" />
+        </div>
+
+        <div className="container mx-auto relative">
           <FadeInSection>
             <StaggerContainer className={`grid md:grid-cols-${whyUsItems.length} gap-8 max-w-4xl mx-auto`}>
               {whyUsItems.map((item) => (

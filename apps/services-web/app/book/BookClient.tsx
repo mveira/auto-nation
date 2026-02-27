@@ -101,72 +101,76 @@ export default function BookClient() {
                   <input type="hidden" name="registration" value={vehicle?.vrm ?? ""} />
                 </div>
 
-                <div>
-                  <label htmlFor="book-name" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Name</label>
-                  <Input id="book-name" name="name" placeholder="Your name" required className="bg-black border-zinc-700 focus:border-primary h-12" />
-                </div>
-                <div>
-                  <label htmlFor="book-email" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Email</label>
-                  <Input id="book-email" name="email" type="email" placeholder="Email address" required className="bg-black border-zinc-700 focus:border-primary h-12" />
-                </div>
-                <div>
-                  <label htmlFor="book-phone" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Phone</label>
-                  <Input id="book-phone" name="phone" type="tel" placeholder="Phone number" required className="bg-black border-zinc-700 focus:border-primary h-12" />
-                </div>
+                <fieldset disabled={!vehicle} className={!vehicle ? "opacity-60 transition-opacity" : "transition-opacity"}>
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="book-name" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Name</label>
+                      <Input id="book-name" name="name" placeholder="Your name" required className="bg-black border-zinc-700 focus:border-primary h-12" />
+                    </div>
+                    <div>
+                      <label htmlFor="book-email" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Email</label>
+                      <Input id="book-email" name="email" type="email" placeholder="Email address" required className="bg-black border-zinc-700 focus:border-primary h-12" />
+                    </div>
+                    <div>
+                      <label htmlFor="book-phone" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Phone</label>
+                      <Input id="book-phone" name="phone" type="tel" placeholder="Phone number" required className="bg-black border-zinc-700 focus:border-primary h-12" />
+                    </div>
 
-                <div>
-                  <label htmlFor="book-service" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Service</label>
-                  <select
-                    id="book-service"
-                    name="service"
-                    required
-                    defaultValue={defaultService}
-                    className="flex h-12 w-full rounded-xl border border-zinc-700 bg-black px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus:border-primary [&:invalid]:text-muted-foreground"
-                  >
-                    <option value="" disabled>Select a service</option>
-                    {services.map((s) => (
-                      <option key={s.slug} value={s.title}>
-                        {s.title}
-                      </option>
-                    ))}
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
+                    <div>
+                      <label htmlFor="book-service" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Service</label>
+                      <select
+                        id="book-service"
+                        name="service"
+                        required
+                        defaultValue={defaultService}
+                        className="flex h-12 w-full rounded-xl border border-zinc-700 bg-black px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus:border-primary [&:invalid]:text-muted-foreground"
+                      >
+                        <option value="" disabled>Select a service</option>
+                        {services.map((s) => (
+                          <option key={s.slug} value={s.title}>
+                            {s.title}
+                          </option>
+                        ))}
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
 
-                <div>
-                  <label htmlFor="book-date" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Preferred Date</label>
-                  <Input id="book-date" name="preferredDate" type="date" className="bg-black border-zinc-700 focus:border-primary h-12" />
-                </div>
+                    <div>
+                      <label htmlFor="book-date" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Preferred Date</label>
+                      <Input id="book-date" name="preferredDate" type="date" className="bg-black border-zinc-700 focus:border-primary h-12" />
+                    </div>
 
-                <div>
-                  <label htmlFor="book-notes" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Notes</label>
-                  <textarea
-                    id="book-notes"
-                    name="notes"
-                    placeholder="Any additional details or symptoms?"
-                    rows={3}
-                    className="flex w-full rounded-xl border border-zinc-700 bg-black px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus:border-primary"
-                  />
-                </div>
+                    <div>
+                      <label htmlFor="book-notes" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Notes</label>
+                      <textarea
+                        id="book-notes"
+                        name="notes"
+                        placeholder="Any additional details or symptoms?"
+                        rows={3}
+                        className="flex w-full rounded-xl border border-zinc-700 bg-black px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus:border-primary"
+                      />
+                    </div>
 
-                {formState === "sent" && (
-                  <p className="text-sm text-green-500 font-medium">
-                    Booking request sent. We&apos;ll confirm your appointment shortly.
-                  </p>
-                )}
-                {formState === "error" && (
-                  <p className="text-sm text-red-500 font-medium">
-                    Something went wrong. Please try again or call us directly.
-                  </p>
-                )}
+                    {formState === "sent" && (
+                      <p className="text-sm text-green-500 font-medium">
+                        Booking request sent. We&apos;ll confirm your appointment shortly.
+                      </p>
+                    )}
+                    {formState === "error" && (
+                      <p className="text-sm text-red-500 font-medium">
+                        Something went wrong. Please try again or call us directly.
+                      </p>
+                    )}
 
-                <Button
-                  type="submit"
-                  className="w-full font-bold text-lg py-6"
-                  disabled={formState === "sending"}
-                >
-                  {formState === "sending" ? "Sending..." : "Request Booking"}
-                </Button>
+                    <Button
+                      type="submit"
+                      className="w-full font-bold text-lg py-6"
+                      disabled={formState === "sending" || !vehicle}
+                    >
+                      {formState === "sending" ? "Sending..." : "Request Booking"}
+                    </Button>
+                  </div>
+                </fieldset>
               </form>
             </CardContent>
           </Card>
