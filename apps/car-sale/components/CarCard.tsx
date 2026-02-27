@@ -27,7 +27,7 @@ export function CarCard({ car, index = 0 }: CarCardProps) {
 
   return (
     <Link href={`/cars/${car.id}`}>
-      <Card className="overflow-hidden border-zinc-800 hover:border-primary/50 hover:shadow-[0_0_30px_rgba(255,215,0,0.15)] transition-all duration-500 cursor-pointer h-full group bg-card/50 backdrop-blur relative">
+      <Card className="overflow-hidden border-zinc-800 hover:border-primary/50 hover:shadow-xl hover:shadow-black/40 transition-all duration-500 cursor-pointer h-full group bg-card/50 backdrop-blur relative">
         {/* Premium badges */}
         <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
           {psychology.isNew && (

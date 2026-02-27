@@ -88,7 +88,7 @@ export function SpotlightVehicle({ car }: SpotlightVehicleProps) {
               <Link href={`/cars/${car.id}`} className="flex-1">
                 <Button
                   size="lg"
-                  className="w-full bg-primary hover:bg-primary/90 text-black font-black text-lg py-7 shadow-[0_0_30px_rgba(255,215,0,0.3)] hover:shadow-[0_0_40px_rgba(255,215,0,0.5)]"
+                  className="w-full bg-primary hover:bg-primary/90 text-black font-black text-lg py-7 shadow-lg shadow-black/30 hover:shadow-xl hover:shadow-black/40"
                 >
                   <Zap className="mr-2 h-5 w-5" />
                   VIEW FULL DETAILS

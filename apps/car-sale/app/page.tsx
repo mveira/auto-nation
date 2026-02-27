@@ -5,6 +5,7 @@ import { SocialProof } from "@/components/SocialProof"
 import { UrgencyBanner } from "@/components/UrgencyBanner"
 import { SpotlightVehicle } from "@/components/SpotlightVehicle"
 import { CarCard } from "@/components/CarCard"
+import { FadeInSection, StaggerContainer, StaggerItem } from "@/components/AnimatedSection"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { getFeaturedCars, getAllMakes, getCars } from "@/services/cars.service"
@@ -82,59 +83,58 @@ export default function HomePage() {
         <div className="absolute top-0 right-0 w-1/2 h-96 bg-primary/5 blur-3xl rounded-full"></div>
 
         <div className="relative">
-          <div className="text-center mb-12">
-            <Badge className="mb-6 bg-primary/10 text-primary border-primary/30 px-6 py-2 text-sm">
-              <Zap className="h-4 w-4 mr-2" />
-              HAND-SELECTED COLLECTION
-            </Badge>
-            <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter">
-              QUALITY <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-zinc-300">VEHICLES</span>
-            </h2>
-            <p className="text-zinc-400 text-xl font-light max-w-3xl mx-auto mb-8">
-              Every vehicle in our collection is personally inspected, verified, and prepared to the highest standards
-            </p>
+          <FadeInSection>
+            <div className="text-center mb-12">
+              <Badge className="mb-6 bg-primary/10 text-primary border-primary/30 px-6 py-2 text-sm">
+                <Zap className="h-4 w-4 mr-2" />
+                HAND-SELECTED COLLECTION
+              </Badge>
+              <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter">
+                QUALITY <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-zinc-300">VEHICLES</span>
+              </h2>
+              <p className="text-zinc-400 text-xl font-light max-w-3xl mx-auto mb-8">
+                Every vehicle in our collection is personally inspected, verified, and prepared to the highest standards
+              </p>
 
-            {/* Value props */}
-            <div className="flex flex-wrap justify-center gap-6 mb-12">
-              <div className="flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800">
-                <Shield className="h-4 w-4 text-primary" />
-                <span className="text-sm font-semibold">FULL SERVICE HISTORY</span>
-              </div>
-              <div className="flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                <span className="text-sm font-semibold">COMPETITIVE PRICING</span>
-              </div>
-              <div className="flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800">
-                <Zap className="h-4 w-4 text-primary" />
-                <span className="text-sm font-semibold">READY TO DRIVE</span>
+              {/* Value props */}
+              <div className="flex flex-wrap justify-center gap-6 mb-12">
+                <div className="flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800">
+                  <Shield className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold">FULL SERVICE HISTORY</span>
+                </div>
+                <div className="flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold">COMPETITIVE PRICING</span>
+                </div>
+                <div className="flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800">
+                  <Zap className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold">READY TO DRIVE</span>
+                </div>
               </div>
             </div>
-          </div>
+          </FadeInSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {featuredCars.map((car, index) => (
-              <div
-                key={car.id}
-                style={{
-                  animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`
-                }}
-              >
+              <StaggerItem key={car.id}>
                 <CarCard car={car} index={index} />
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
 
-          <div className="text-center">
-            <Link href="/inventory">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-black font-black text-lg px-12 py-7 shadow-[0_0_30px_rgba(255,215,0,0.3)] hover:shadow-[0_0_40px_rgba(255,215,0,0.5)]">
-                VIEW FULL COLLECTION
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <p className="text-zinc-500 text-sm mt-4">
-              Quality checked vehicles • Full warranty included
-            </p>
-          </div>
+          <FadeInSection delay={0.2}>
+            <div className="text-center">
+              <Link href="/inventory">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-black font-black text-lg px-12 py-7 shadow-lg shadow-black/30">
+                  VIEW FULL COLLECTION
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <p className="text-zinc-500 text-sm mt-4">
+                Quality checked vehicles • Full warranty included
+              </p>
+            </div>
+          </FadeInSection>
         </div>
       </section>
 
@@ -168,7 +168,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
             >
-              <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-black font-black text-base sm:text-lg px-6 sm:px-12 py-7 shadow-[0_0_30px_rgba(255,215,0,0.3)]">
+              <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-black font-black text-base sm:text-lg px-6 sm:px-12 py-7 shadow-lg shadow-black/30">
                 <Zap className="mr-2 h-5 w-5" />
                 SPEAK TO SPECIALIST
               </Button>

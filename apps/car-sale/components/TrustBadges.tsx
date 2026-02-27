@@ -1,5 +1,6 @@
 import { Shield, Award, Users, Clock } from "lucide-react"
 import { siteSettings } from "@/lib/siteSettings"
+import { StaggerContainer, StaggerItem } from "@/components/AnimatedSection"
 
 export function TrustBadges() {
   const badges = [
@@ -23,9 +24,9 @@ export function TrustBadges() {
   return (
     <div className="bg-zinc-900 py-16 px-4 border-y border-zinc-800">
       <div className="container mx-auto">
-        <div className="grid grid-cols-3 gap-8">
+        <StaggerContainer className="grid grid-cols-3 gap-8">
           {badges.map((badge, index) => (
-            <div key={index} className="text-center group">
+            <StaggerItem key={index} className="text-center group">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-colors border border-primary/20">
                 <badge.icon className="h-10 w-10 text-primary" />
               </div>
@@ -33,9 +34,9 @@ export function TrustBadges() {
               <p className="text-sm text-zinc-400 font-light">
                 {badge.description}
               </p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </div>
   )

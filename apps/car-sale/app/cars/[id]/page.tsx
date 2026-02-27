@@ -219,7 +219,7 @@ export default async function CarDetailPage({
             {/* CTA Buttons */}
             <div className="space-y-3 mb-12">
               <Link href={`/schedule?car=${encodeURIComponent(`${car.year} ${car.make} ${car.model}`)}&id=${car.id}`}>
-                <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-black font-black text-lg py-7 shadow-[0_0_30px_rgba(255,215,0,0.3)] hover:shadow-[0_0_40px_rgba(255,215,0,0.5)]">
+                <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-black font-black text-lg py-7 shadow-lg shadow-black/30 hover:shadow-xl hover:shadow-black/40">
                   <Calendar className="mr-2 h-5 w-5" />
                   SCHEDULE TEST DRIVE
                 </Button>
@@ -302,7 +302,7 @@ export default async function CarDetailPage({
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-sm border-t border-zinc-800 shadow-2xl z-50">
         <div className="p-3 space-y-2">
           <Link href={`/schedule?car=${encodeURIComponent(`${car.year} ${car.make} ${car.model}`)}&id=${car.id}`}>
-            <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-black font-black shadow-[0_0_30px_rgba(255,215,0,0.3)]">
+            <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-black font-black shadow-lg shadow-black/30">
               <Calendar className="mr-2 h-5 w-5" />
               SCHEDULE TEST DRIVE
             </Button>

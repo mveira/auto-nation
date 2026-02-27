@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Phone, Mail, MapPin } from "lucide-react"
+import { FadeInSection } from "@/components/AnimatedSection"
 
 const isProd = process.env.NODE_ENV === "production"
 
@@ -64,18 +65,20 @@ export default function ContactPage() {
   }
 
   return (
-    <section className="py-16 md:py-24 px-4">
+    <section className="py-20 md:py-28 px-4">
       <div className="container mx-auto max-w-5xl">
-        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-center mb-4">
-          Get In <span className="text-primary">Touch</span>
-        </h1>
-        <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto font-light">
-          Have a question or need a quote? Drop us a message and we'll get back to you.
-        </p>
+        <FadeInSection>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-center mb-4">
+            Get In <span className="text-primary">Touch</span>
+          </h1>
+          <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto font-light">
+            Have a question or need a quote? Drop us a message and we'll get back to you.
+          </p>
+        </FadeInSection>
 
         <div className="grid md:grid-cols-5 gap-8">
           {/* Contact Info */}
-          <div className="md:col-span-2 space-y-6">
+          <FadeInSection className="md:col-span-2 space-y-6">
             {phone && (
               <div className="flex items-start gap-4">
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary flex-shrink-0">
@@ -117,61 +120,63 @@ export default function ContactPage() {
                 </div>
               </div>
             )}
-          </div>
+          </FadeInSection>
 
           {/* Form */}
-          <Card className="md:col-span-3">
-            <CardHeader>
-              <CardTitle>Send a Message</CardTitle>
-              <CardDescription>We aim to respond within 24 hours.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label htmlFor="contact-name" className="sr-only">Your name</label>
-                  <Input id="contact-name" name="name" placeholder="Your name" required />
-                </div>
-                <div>
-                  <label htmlFor="contact-email" className="sr-only">Email address</label>
-                  <Input id="contact-email" name="email" type="email" placeholder="Email address" required />
-                </div>
-                <div>
-                  <label htmlFor="contact-phone" className="sr-only">Phone number</label>
-                  <Input id="contact-phone" name="phone" type="tel" placeholder="Phone number" required />
-                </div>
-                <div>
-                  <label htmlFor="contact-message" className="sr-only">Message</label>
-                  <textarea
-                    id="contact-message"
-                    name="message"
-                    placeholder="How can we help?"
-                    required
-                    rows={4}
-                    className="flex w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                </div>
+          <FadeInSection delay={0.2} className="md:col-span-3">
+            <Card>
+              <CardHeader>
+                <CardTitle>Send a Message</CardTitle>
+                <CardDescription>We aim to respond within 24 hours.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label htmlFor="contact-name" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Name</label>
+                    <Input id="contact-name" name="name" placeholder="Your name" required className="bg-black border-zinc-700 focus:border-primary h-12" />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-email" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Email</label>
+                    <Input id="contact-email" name="email" type="email" placeholder="Email address" required className="bg-black border-zinc-700 focus:border-primary h-12" />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-phone" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Phone</label>
+                    <Input id="contact-phone" name="phone" type="tel" placeholder="Phone number" required className="bg-black border-zinc-700 focus:border-primary h-12" />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-message" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Message</label>
+                    <textarea
+                      id="contact-message"
+                      name="message"
+                      placeholder="How can we help?"
+                      required
+                      rows={4}
+                      className="flex w-full rounded-xl border border-zinc-700 bg-black px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus:border-primary disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </div>
 
-                {formState === "sent" && (
-                  <p className="text-sm text-green-500 font-medium">
-                    Message sent. We'll be in touch.
-                  </p>
-                )}
-                {formState === "error" && (
-                  <p className="text-sm text-red-500 font-medium">
-                    Something went wrong. Please try again or call us directly.
-                  </p>
-                )}
+                  {formState === "sent" && (
+                    <p className="text-sm text-green-500 font-medium">
+                      Message sent. We'll be in touch.
+                    </p>
+                  )}
+                  {formState === "error" && (
+                    <p className="text-sm text-red-500 font-medium">
+                      Something went wrong. Please try again or call us directly.
+                    </p>
+                  )}
 
-                <Button
-                  type="submit"
-                  className="w-full font-bold"
-                  disabled={formState === "sending"}
-                >
-                  {formState === "sending" ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  <Button
+                    type="submit"
+                    className="w-full font-bold text-lg py-6"
+                    disabled={formState === "sending"}
+                  >
+                    {formState === "sending" ? "Sending..." : "Send Message"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </FadeInSection>
         </div>
       </div>
     </section>

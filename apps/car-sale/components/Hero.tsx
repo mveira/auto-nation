@@ -135,7 +135,7 @@ export function Hero({ filteredMake }: HeroProps) {
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <Link href={filteredMake ? `/inventory?make=${filteredMake}` : "/inventory"}>
-              <Button size="lg" className="w-full sm:w-auto text-lg px-10 py-7 bg-primary hover:bg-primary/90 text-black font-black shadow-[0_0_30px_rgba(255,215,0,0.3)] hover:shadow-[0_0_40px_rgba(255,215,0,0.5)] transition-all">
+              <Button size="lg" className="w-full sm:w-auto text-lg px-10 py-7 bg-primary hover:bg-primary/90 text-black font-black shadow-lg shadow-black/30 hover:shadow-xl hover:shadow-black/40 transition-all">
                 <Zap className="mr-2 h-5 w-5" />
                 {filteredMake ? `VIEW ALL ${filteredMake.toUpperCase()}` : "EXPLORE COLLECTION"}
               </Button>
@@ -212,7 +212,7 @@ export function Hero({ filteredMake }: HeroProps) {
       {/* Quick view button */}
       <Link
         href={`/cars/${currentCar.id}`}
-        className="absolute bottom-4 md:bottom-8 left-4 md:left-8 z-20 hidden md:flex items-center gap-2 bg-primary/90 hover:bg-primary text-black font-bold px-6 py-3 rounded-lg transition-all hover:scale-105 shadow-[0_0_30px_rgba(255,215,0,0.3)]"
+        className="absolute bottom-4 md:bottom-8 left-4 md:left-8 z-20 hidden md:flex items-center gap-2 bg-primary/90 hover:bg-primary text-black font-bold px-6 py-3 rounded-lg transition-all hover:scale-105 shadow-lg shadow-black/30"
       >
         <Zap className="h-4 w-4" />
         VIEW THIS {currentCar.make.toUpperCase()}

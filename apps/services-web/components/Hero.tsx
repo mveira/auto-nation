@@ -61,20 +61,20 @@ function HeroVisual() {
       </div>
 
       {/* Mini stats row below image */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-5 px-1">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-4 sm:mt-5">
         {yearsExp && (
-        <div className="text-center">
+        <div className="text-center bg-zinc-900/60 backdrop-blur border border-zinc-800 rounded-xl p-3 hover:border-primary/30 transition-colors">
           <p className="text-xl sm:text-2xl font-black text-primary">{yearsExp}</p>
-          <p className="text-[10px] sm:text-xs text-muted-foreground">Years Experience</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground font-semibold uppercase">Years Exp.</p>
         </div>
         )}
-        <div className="text-center border-x border-border">
+        <div className="text-center bg-zinc-900/60 backdrop-blur border border-zinc-800 rounded-xl p-3 hover:border-primary/30 transition-colors">
           <p className="text-xl sm:text-2xl font-black text-primary">6</p>
-          <p className="text-[10px] sm:text-xs text-muted-foreground">Core Services</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground font-semibold uppercase">Services</p>
         </div>
-        <div className="text-center">
+        <div className="text-center bg-zinc-900/60 backdrop-blur border border-zinc-800 rounded-xl p-3 hover:border-primary/30 transition-colors">
           <p className="text-xl sm:text-2xl font-black text-primary">All</p>
-          <p className="text-[10px] sm:text-xs text-muted-foreground">Petrol &amp; Diesel</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground font-semibold uppercase">Makes</p>
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@ export function Hero() {
               Expert Car Repairs in Fishponds, Bristol
             </span>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] lg:leading-[1.1] mb-4">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[1.05] lg:leading-[1.1] mb-4">
               Reliable Car Servicing{" "}
               <span className="relative inline-block">
                 <span className="relative z-10">&amp; Repairs</span>

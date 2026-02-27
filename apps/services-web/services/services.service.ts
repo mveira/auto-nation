@@ -1,8 +1,19 @@
+import { Wrench, Clock, ShieldCheck, Disc3, CircleDot, Cpu, LucideIcon } from "lucide-react"
+
 export interface Service {
   title: string
   slug: string
   shortDescription: string
   includes: string[]
+}
+
+export const SERVICE_ICONS: Record<string, LucideIcon> = {
+  "full-service": Wrench,
+  "interim-service": Clock,
+  "mot-testing": ShieldCheck,
+  "brake-repairs": Disc3,
+  "tyre-fitting": CircleDot,
+  "diagnostics": Cpu,
 }
 
 const SERVICES: Service[] = [

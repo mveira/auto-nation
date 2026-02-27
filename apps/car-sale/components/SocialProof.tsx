@@ -1,6 +1,7 @@
 import { Star, Quote } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { siteSettings } from "@/lib/siteSettings"
+import { FadeInSection, StaggerContainer, StaggerItem } from "@/components/AnimatedSection"
 
 export function SocialProof() {
   const testimonials = [
@@ -30,52 +31,56 @@ export function SocialProof() {
   return (
     <section className="py-20 px-4 bg-gradient-to-b from-zinc-900 to-black border-y border-zinc-800">
       <div className="container mx-auto">
-        <div className="text-center mb-12">
-          {/* TODO: Wire to real rating from Strapi/Trustpilot */}
-          {siteSettings.customerRating && (
-            <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-3 rounded-full mb-6">
-              <Star className="h-5 w-5 text-primary fill-primary" />
-              <span className="font-black text-xl">{siteSettings.customerRating} OUT OF 5</span>
-              <Star className="h-5 w-5 text-primary fill-primary" />
-            </div>
-          )}
-          <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter">
-            TRUSTED BY <span className="text-primary">ENTHUSIASTS</span>
-          </h2>
-          <p className="text-zinc-400 text-lg">Real feedback from real buyers</p>
-        </div>
+        <FadeInSection>
+          <div className="text-center mb-12">
+            {/* TODO: Wire to real rating from Strapi/Trustpilot */}
+            {siteSettings.customerRating && (
+              <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-3 rounded-full mb-6">
+                <Star className="h-5 w-5 text-primary fill-primary" />
+                <span className="font-black text-xl">{siteSettings.customerRating} OUT OF 5</span>
+                <Star className="h-5 w-5 text-primary fill-primary" />
+              </div>
+            )}
+            <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter">
+              TRUSTED BY <span className="text-primary">ENTHUSIASTS</span>
+            </h2>
+            <p className="text-zinc-400 text-lg">Real feedback from real buyers</p>
+          </div>
+        </FadeInSection>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <StaggerContainer className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="bg-zinc-900/50 border-zinc-800 backdrop-blur hover:border-primary/30 transition-all">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-primary fill-primary" />
-                  ))}
-                </div>
-                
-                <Quote className="h-8 w-8 text-primary/20 mb-3" />
-                
-                <p className="text-zinc-300 mb-4 leading-relaxed">
-                  "{testimonial.text}"
-                </p>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-bold">{testimonial.name}</p>
-                    <p className="text-sm text-zinc-500">Purchased: {testimonial.car}</p>
+            <StaggerItem key={index}>
+              <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur hover:border-primary/30 transition-all">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-1 mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 text-primary fill-primary" />
+                    ))}
                   </div>
-                  {testimonial.verified && (
-                    <div className="bg-green-500/10 text-green-500 text-xs px-2 py-1 rounded border border-green-500/30">
-                      VERIFIED
+
+                  <Quote className="h-8 w-8 text-primary/20 mb-3" />
+
+                  <p className="text-zinc-300 mb-4 leading-relaxed">
+                    &ldquo;{testimonial.text}&rdquo;
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-bold">{testimonial.name}</p>
+                      <p className="text-sm text-zinc-500">Purchased: {testimonial.car}</p>
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                    {testimonial.verified && (
+                      <div className="bg-green-500/10 text-green-500 text-xs px-2 py-1 rounded border border-green-500/30">
+                        VERIFIED
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
         {/* TODO: Wire reviewSourceUrl from Strapi */}
         {siteSettings.reviewSourceUrl && (
