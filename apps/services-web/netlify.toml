@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  # Publish dir is managed by @netlify/plugin-nextjs — do not set publish = ".next"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

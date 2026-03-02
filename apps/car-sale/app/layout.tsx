@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
+import dynamic from "next/dynamic"
 import { Inter, Space_Grotesk } from "next/font/google"
 import "./globals.css"
-import { Navigation } from "@/components/Navigation"
 import { siteSettings } from "@/lib/siteSettings"
+
+const Navigation = dynamic(() => import("@/components/Navigation").then((m) => ({ default: m.Navigation })), { ssr: true })
 
 const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "600", "700", "900"], variable: "--font-inter" })
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-display" })
