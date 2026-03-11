@@ -7,10 +7,12 @@
     "start": "next start",
     "lint": "next lint",
     "validate:prod": "DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/validate-prod.js",
-    "build": "next build",
-    "build:prod": "npm run validate:prod && next build"
+    "build": "prisma generate --schema=../../prisma/schema.prisma && next build",
+    "build:prod": "npm run validate:prod && prisma generate --schema=../../prisma/schema.prisma && next build",
+    "outbox:process": "npx tsx scripts/process-outbox.ts"
   },
   "dependencies": {
+    "@prisma/client": "^6.0.0",
     "@radix-ui/react-slot": "^1.2.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -23,15 +25,19 @@
     "tailwind-merge": "^2.2.0"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.0.0",
     "@types/node": "^22.10.5",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "autoprefixer": "^10.4.20",
+    "dotenv": "^17.3.1",
     "eslint": "^9.18.0",
     "eslint-config-next": "^15.1.6",
     "postcss": "^8.4.49",
+    "prisma": "^6.0.0",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.7.0",
     "typescript": "^5.7.3"
   }
 }

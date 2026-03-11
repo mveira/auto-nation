@@ -40,6 +40,7 @@ export default function BookClient() {
       service: (form.elements.namedItem("service") as HTMLSelectElement).value,
       vehicle: (form.elements.namedItem("vehicle") as HTMLInputElement).value,
       registration: (form.elements.namedItem("registration") as HTMLInputElement).value,
+      vrm: (form.elements.namedItem("registration") as HTMLInputElement).value,
       preferredDate: (form.elements.namedItem("preferredDate") as HTMLInputElement).value,
       notes: (form.elements.namedItem("notes") as HTMLTextAreaElement).value,
     }

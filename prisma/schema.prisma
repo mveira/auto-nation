@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Multi-tenant client ────────────────────────────────────────────────────
+
+model Client {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  ghlLocationId  String?  @map("ghl_location_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  users    User[]
+  leads    Lead[]
+  ghlLinks GhlLink[]
+
+  @@map("clients")
+}
+
+// ── Auth ────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  clientId     String   @map("client_id")
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  client Client @relation(fields: [clientId], references: [id])
+
+  @@map("users")
+}
+
+// ── Leads ───────────────────────────────────────────────────────────────────
+
+model Lead {
+  id       String @id @default(cuid())
+  publicId String @unique @default(cuid()) @map("public_id")
+  clientId String @map("client_id")
+
+  type     String // "booking" | "enquiry"
+  pipeline String @default("SERVICES") // "SERVICES" | "SALES"
+  stageKey String @default("SERVICES_BOOKED") @map("stage_key")
+
+  // Contact
+  name  String
+  email String
+  phone String
+
+  // Vehicle
+  vrm     String?
+  vehicle String?
+
+  // Booking-specific
+  service       String?              // service slug
+  serviceName   String?  @map("service_name")
+  preferredDate String?  @map("preferred_date")
+  notes         String?
+
+  // Enquiry-specific
+  message String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  client    Client          @relation(fields: [clientId], references: [id])
+  motReport MotReport?
+  ghlLink   GhlLink?
+  payments  SalesPayment[]
+
+  @@index([clientId, pipeline, stageKey])
+  @@index([publicId])
+  @@index([vrm])
+  @@index([createdAt])
+  @@map("leads")
+}
+
+// ── MOT Reports ─────────────────────────────────────────────────────────────
+
+model MotReport {
+  id                 String   @id @default(cuid())
+  leadId             String   @unique @map("lead_id")
+  vrm                String
+  status             String
+  expiryDate         String?  @map("expiry_date")
+  lastTestDate       String?  @map("last_test_date")
+  odometerAtLastTest Int?     @map("odometer_at_last_test")
+  advisoryCount      Int      @default(0) @map("advisory_count")
+  majorCount         Int      @default(0) @map("major_count")
+  dangerousCount     Int      @default(0) @map("dangerous_count")
+  flags              String[]
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  lead Lead @relation(fields: [leadId], references: [id])
+
+  @@map("mot_reports")
+}
+
+// ── GHL sync links ──────────────────────────────────────────────────────────
+
+model GhlLink {
+  id               String    @id @default(cuid())
+  clientId         String    @map("client_id")
+  leadId           String    @unique @map("lead_id")
+  ghlContactId     String?   @map("ghl_contact_id")
+  ghlOpportunityId String?   @map("ghl_opportunity_id")
+  lastSyncedAt     DateTime? @map("last_synced_at")
+  syncStatus       String    @default("pending") @map("sync_status")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  client Client @relation(fields: [clientId], references: [id])
+  lead   Lead   @relation(fields: [leadId], references: [id])
+
+  @@map("ghl_links")
+}
+
+// ── Sales Payments ──────────────────────────────────────────────────────────
+
+model SalesPayment {
+  id                  String    @id @default(cuid())
+  leadId              String    @map("lead_id")
+  type                String    // "DEPOSIT" | "BALANCE"
+  method              String    // "ONLINE_LINK" | "MANUAL" | "BANK_TRANSFER" | "CARD_TERMINAL"
+  amountPence         Int       @map("amount_pence")
+  currency            String    @default("GBP")
+  status              String    @default("PENDING")
+  provider            String    @default("NONE")
+  providerPaymentId   String?   @map("provider_payment_id")
+  providerCheckoutUrl String?   @map("provider_checkout_url")
+  paidAt              DateTime? @map("paid_at")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  lead   Lead                @relation(fields: [leadId], references: [id])
+  events SalesPaymentEvent[]
+
+  @@index([leadId])
+  @@map("sales_payments")
+}
+
+model SalesPaymentEvent {
+  id        String   @id @default(cuid())
+  paymentId String   @map("payment_id")
+  eventType String   @map("event_type")
+  rawJson   Json?    @map("raw_json")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  payment SalesPayment @relation(fields: [paymentId], references: [id])
+
+  @@index([paymentId])
+  @@map("sales_payment_events")
+}
+
+// ── Outbox (reliable event delivery) ────────────────────────────────────────
+
+model OutboxEvent {
+  id          String    @id @default(cuid())
+  eventType   String    @map("event_type")
+  payload     Json
+  status      String    @default("pending")
+  attempts    Int       @default(0)
+  lastError   String?   @map("last_error")
+  nextRetryAt DateTime  @default(now()) @map("next_retry_at")
+  processedAt DateTime? @map("processed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([status, nextRetryAt])
+  @@map("outbox_events")
+}

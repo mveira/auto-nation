@@ -1,0 +1,458 @@
+GHL Complete Setup Blueprint
+Garage Services + Car Sales
+Single Business | Single Sub-Account | Controlled Client Portal
+Table of Contents
+
+1.Overview
+
+2.System Architecture
+
+3.Snapshot Loading Strategy
+
+4.Pipeline Design
+
+5.Forms Structure
+
+6.Workflow Architecture
+
+7.Calendar Setup
+
+8.Tagging System
+
+9.Client Portal Configuration
+
+10.Governance Model
+
+11.Operational Flow
+
+12.Quality Control Checklist
+
+13.Scaling Strategy
+
+14.Final System Summary
+
+
+1. Overview
+
+This document defines the complete GoHighLevel (GHL) setup for:
+
+🚗 Garage Services Website
+
+🚙 Car Sales Website
+
+🏢 Same business entity
+
+🔐 One GHL Sub-Account
+
+👤 One controlled client portal login
+
+The objective:
+
+Keep both business lines separated internally
+
+Maintain automation control
+
+Provide a clean client-facing operational portal
+
+Prevent workflow conflicts
+
+Create a scalable foundation
+
+2. System Architecture
+SUB-ACCOUNT
+├── PIPELINE: GARAGE – Services
+├── PIPELINE: SALES – Vehicles
+├── WORKFLOWS: GARAGE – ...
+├── WORKFLOWS: SALES – ...
+├── FORMS: GARAGE – ...
+├── FORMS: SALES – ...
+├── CALENDAR: GARAGE – Service Booking
+├── CALENDAR: SALES – Test Drive
+└── TAGS separated by prefix
+
+All assets must be prefixed clearly to prevent system overlap.
+
+3. Snapshot Loading Strategy
+Step 1 — Load Garage Snapshot
+
+Immediately rename all assets:
+
+Pipeline → GARAGE – Services
+
+Workflows → GARAGE – [Workflow Name]
+
+Forms → GARAGE – Service Form
+
+Tags → GARAGE – MOT, GARAGE – Repair
+
+Calendar → GARAGE – Service Booking
+
+Step 2 — Load Dealer Snapshot
+
+Rename all assets:
+
+Pipeline → SALES – Vehicles
+
+Workflows → SALES – [Workflow Name]
+
+Forms → SALES – Vehicle Enquiry
+
+Tags → SALES – Finance, SALES – Hot
+
+Calendar → SALES – Test Drive
+
+Never leave generic names.
+
+4. Pipeline Design
+🚗 GARAGE – Services Pipeline
+
+Stages:
+
+New Enquiry
+
+Contacted
+
+Booked In
+
+Job Complete
+
+Awaiting Payment
+
+Paid
+
+Closed Won
+
+Lost
+
+🚙 SALES – Vehicles Pipeline
+
+Stages:
+
+New Vehicle Enquiry
+
+Contacted
+
+Test Drive Booked
+
+Finance Sent
+
+Deal Agreed
+
+Deposit Taken
+
+Sold
+
+Lost
+
+5. Forms Structure
+GARAGE – Service Form
+
+Fields:
+
+Name
+
+Phone
+
+Email
+
+Vehicle Registration
+
+Service Needed
+
+Preferred Date
+
+Hidden Field:
+
+Lead Type = Service
+
+SALES – Vehicle Enquiry Form
+
+Fields:
+
+Name
+
+Phone
+
+Email
+
+Vehicle Interested In
+
+Finance Required (Yes/No)
+
+Hidden Field:
+
+Lead Type = Sales
+
+6. Workflow Architecture
+Critical Rule
+
+Never use:
+
+“Any Form Submitted”
+
+Broad triggers without filtering
+
+GARAGE Workflows
+
+Trigger:
+
+Form Submitted → GARAGE – Service Form
+
+Actions:
+
+Send confirmation SMS
+
+Send confirmation email
+
+Create Opportunity → GARAGE – Services → New Enquiry
+
+Assign staff member
+
+Internal notification
+
+Optional:
+
+24-hour follow-up if no response
+
+SALES Workflows
+
+Trigger:
+
+Form Submitted → SALES – Vehicle Enquiry
+
+Actions:
+
+SMS acknowledging enquiry
+
+Email with vehicle details
+
+Create Opportunity → SALES – Vehicles → New Vehicle Enquiry
+
+Assign salesperson
+
+Internal notification
+
+Follow-Up Sequence:
+
+Day 1 SMS
+
+Day 3 SMS
+
+Day 5 Final Follow-Up
+
+7. Calendar Setup
+
+Create:
+
+GARAGE – Service Booking
+
+SALES – Test Drive
+
+Attach:
+
+Service Form → Service Calendar
+
+Vehicle Enquiry Form → Test Drive Calendar (optional)
+
+8. Tagging System
+Garage Tags
+
+GARAGE – Service Lead
+
+GARAGE – MOT
+
+GARAGE – Repair
+
+GARAGE – Returning Customer
+
+Sales Tags
+
+SALES – Lead
+
+SALES – Finance Required
+
+SALES – Hot Lead
+
+SALES – Deposit Paid
+
+Never mix tag categories.
+
+9. Client Portal Configuration
+
+Snapshots do NOT create the client portal.
+
+The portal is created via user permissions.
+
+Navigate to:
+
+Settings → Team Management → Add User
+
+Create Role: Dealer Operator
+
+Permissions to ENABLE
+
+Dashboard
+
+Conversations
+
+Opportunities
+
+Contacts
+
+Calendar
+
+Basic Reporting
+
+Permissions to DISABLE
+
+Workflows
+
+Settings
+
+Integrations
+
+Phone Numbers
+
+Snapshots
+
+API Access
+
+Billing
+
+Automation Editing
+
+What The Client Sees
+
+Sidebar:
+
+Dashboard
+
+Conversations
+
+Opportunities
+
+Contacts
+
+Calendar
+
+Reporting
+
+They can:
+
+Move leads in pipelines
+
+Reply to messages
+
+Add notes
+
+Book appointments
+
+They cannot:
+
+Modify automation
+
+Break system logic
+
+Access backend configuration
+
+10. Governance Model
+
+You control:
+
+Workflow logic
+
+Trigger conditions
+
+Automation edits
+
+Snapshot structure
+
+Phone configuration
+
+Integrations
+
+Client controls:
+
+Lead management
+
+Communication
+
+Pipeline movement
+
+Appointment handling
+
+This preserves system integrity.
+
+11. Operational Flow
+Garage Lead Flow
+
+Website → Service Form → Workflow → Pipeline → Staff Contact → Completion → Review Request
+
+Sales Lead Flow
+
+Website → Vehicle Enquiry Form → Workflow → Pipeline → Test Drive → Finance → Deposit → Sold
+
+12. Quality Control Checklist
+
+Before going live:
+
+ All assets renamed with prefixes
+
+ No generic workflow triggers
+
+ Pipelines separated correctly
+
+ Forms mapped correctly
+
+ Calendars attached properly
+
+ Tags separated by business type
+
+ Client user has restricted permissions
+
+ Test lead run through both systems
+
+13. Scaling Strategy
+
+When managing multiple dealers:
+
+Create:
+
+AUTO-BUSINESS MASTER SNAPSHOT
+
+Containing:
+
+GARAGE System
+
+SALES System
+
+Clean prefixes
+
+Tested automation
+
+Do not stack snapshots long-term.
+
+Build one master template instead.
+
+14. Final System Summary
+1 GHL Sub-Account
+    ├── GARAGE – Services System
+    ├── SALES – Vehicles System
+    ├── Unified Inbox
+    └── Controlled Client Portal Access
+
+This setup provides:
+
+Clean separation
+
+One login for the client
+
+Automation control retained
+
+Scalable architecture
+
+Professional delivery model
+
+Status
+
+This document defines the complete, scalable structure for operating both a garage services site and a car sales site inside one GHL sub-account with controlled portal access.

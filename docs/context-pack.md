@@ -1,14 +1,15 @@
 # Auto Nation — Context Pack (single source of truth)
 
-Last updated: 2026-02-23
+Last updated: 2026-03-05
 Owner: Marcus
 
 ## What this project is
 A modern automotive system with:
 - `apps/car-sale` (Next.js) — EXISTS and is live on Netlify (sales site)
-- `apps/services-web` (Next.js) — EXISTS, core pages built, not yet deployed (see status below)
-- `apps/cms` (Strapi on Railway + Postgres) — CMS + vehicle store + sync skeleton
-- GoHighLevel (GHL) — CRM + automations (not wired yet)
+- `apps/services-web` (Next.js) — EXISTS, core pages built, booking system in progress
+- `apps/garage-admin` (Next.js) — planned internal dashboard
+- Supabase (Postgres) — system of record for all operational data
+- GoHighLevel (GHL) — CRM + automations + calendar availability
 - Auto Trader partner feed — pending access (parser not implemented)
 
 ## Current priority (Decision)
@@ -19,21 +20,24 @@ Decision doc:
 
 ## Repo snapshot (high-level)
 Root:
-- `ARCHITECTURE.md` (locked rules — tokens, tone, tech constraints)
-- `PSYCHOLOGY.md` (legacy notes; tone rules now in ARCHITECTURE)
-- `docs/` (gsd templates, decisions, deployment notes)
+- `ARCHITECTURE.md` (locked rules — system boundaries, tech constraints)
+- `docs/` (gsd templates, decisions, deployment notes, TODO)
+- `docs/TODO.md` (active task list — must be updated as work completes)
 Apps:
 - `apps/car-sale/` (Next.js sales site — live on Netlify)
-- `apps/services-web/` (Next.js services site — built, pre-deploy)
-- `apps/cms/` (Strapi CMS — deployed on Railway)
+- `apps/services-web/` (Next.js services site — booking system in progress)
+- `apps/garage-admin/` (planned — internal dashboard for garage staff)
 
 ## Non-negotiables (from ARCHITECTURE.md)
 - Everyday cars/vans tone: trustworthy, practical, friendly (no "elite/exclusive/performance" language)
 - No invented trust claims, fake stats, fake reviews
 - Both sites must share the same design tokens (dark UI + gold accent #D4AF37)
 - `apps/car-sale` must NOT be recreated or redesigned drastically
-- Strapi is a separate deployed service (Railway), not inside Next.js
-- Vehicles in Strapi are never deleted; sold archive rules exist (SOLD_VISIBLE_DAYS)
+- Supabase is the system of record — all operational data lives there
+- No Strapi — do not introduce Strapi or any CMS not defined in ARCHITECTURE.md
+- DVSA failures must never block bookings
+- Service payments handled by GDS Workshop — platform does not process them
+- Garage staff interact only with the Admin Dashboard — never GHL directly
 
 ## Where we are by phase
 
@@ -50,37 +54,44 @@ Phase 2 (feed sync logic) — Skeleton done, blocked on Auto Trader feed access
 - `parseFeed()` intentionally returns [] until feed format is known
 - Safety: zero parsed vehicles => no sold detection
 
-Phase 3 (services-web build) — Largely built, needs finishing (see details below)
+Phase 3 (services-web build) — Largely built, booking system in progress
 - Core Next.js app exists at `apps/services-web/`
 - Pages built: `/` (homepage), `/services` (list), `/book` (booking form), `/contact` (contact form)
-- API routes built: `/api/contact`, `/api/book` (both using Resend)
-- Design tokens aligned with car-sale (gold + dark UI via CSS vars)
-- JSON-LD AutoRepair structured data (env-driven, prod-safe)
-- Netlify config + pre-build env validation in place
+- API routes built: `/api/contact`, `/api/book` (Resend + Supabase + outbox)
+- Supabase schema: Lead, Appointment, MotReport, GhlLink, OutboxEvent, ServiceConfig
+- Outbox-based GHL sync: contact upsert, opportunity creation, MOT notes
+- DVSA MOT enrichment (best-effort, never blocks)
+- DVLA vehicle lookup on booking form
+- **Confirmed-slot booking (IN PROGRESS — see `docs/TODO.md`):**
+  - Patch diff reviewed, code changes not yet applied
+  - Adds: ServiceConfig table, Appointment table, GET /api/availability, slot selection UI
+  - Requires: 6 GHL calendars created, Services pipeline in GHL, env vars set
 - **What's missing / incomplete:**
   - `/services/[slug]` detail pages — not built
-  - Services data is hardcoded (`services/services.service.ts`), not connected to Strapi
   - No `sitemap.ts` or `robots.ts`
   - Contact details are placeholder (phone, address, email in components)
-  - Hero "4.9/5 Google Rating" is hardcoded in component (should use env or be verified real)
+  - Hero "4.9/5 Google Rating" is hardcoded (should use env or be verified real)
 
 Phase 4 (shared UI extraction) — Not started
 - Later: extract shared Nav/Footer/Container/Section into `packages/ui`
 
-Phase 5 (car-sale Strapi integration) — Not started
-- Later: replace hardcoded cars with Strapi vehicles; add /sold archive, slug migration
+Phase 5 (car-sale integration) — Not started
+- Later: replace hardcoded cars with Supabase vehicles; add /sold archive, slug migration
 
-Phase 6 (GHL wiring) — Not started
-- Later: replace/augment Resend-only lead handling with GHL pipelines
+Phase 6 (garage-admin dashboard) — Not started
+- Later: internal dashboard for garage staff (bookings, schedule, pipeline, comms)
 
 ## services-web (apps/services-web) detailed status
 
 ### What's built
 - **Homepage** (`app/page.tsx`) — Hero with image, trust items, stats row, 4 service card highlights, CTAs
 - **Services list** (`app/services/page.tsx`) — all 6 services listed with book buttons
-- **Booking page** (`app/book/page.tsx`) — full form with service preselection via `?service=slug`
+- **Booking page** (`app/book/page.tsx`) — form with vehicle lookup + service preselection via `?service=slug`
 - **Contact page** (`app/contact/page.tsx`) — form + phone/email/address sidebar
-- **API routes** — `/api/contact` and `/api/book` send emails via Resend
+- **API routes** — `/api/contact` and `/api/book` (Resend email + Supabase write + outbox)
+- **Vehicle lookup** (`components/VehicleLookup.tsx`) — DVLA VES integration
+- **Supabase schema** (Prisma) — Lead, MotReport, GhlLink, OutboxEvent, Client
+- **Lib layer** — `db.ts`, `dvsa.ts`, `dvla.ts`, `ghl.ts`, `intake.ts`, `outbox.ts`
 - **Navigation** (`components/Navigation.tsx`) — sticky, mobile slide-out menu
 - **Footer** (`components/Footer.tsx`) — 3-column layout
 - **MobileStickyCta** (`components/MobileStickyCta.tsx`) — fixed bottom CTA on mobile
@@ -90,34 +101,17 @@ Phase 6 (GHL wiring) — Not started
 - **Netlify** (`netlify.toml`) — Next.js plugin, Node 18, security headers
 - **Design tokens** (`app/globals.css`) — gold primary, dark backgrounds, matches car-sale
 
-### What's NOT built
-- Strapi integration — services are hardcoded in `services/services.service.ts`, not fetched from CMS
+### In progress (confirmed-slot booking)
+- Service catalog in Supabase (`ServiceConfig` model with durations + GHL calendar IDs)
+- `GET /api/availability` — fetches free slots from GHL calendars
+- Slot selection UI on booking page (service + vehicleType + date + time grid)
+- `POST /api/book` — writes Lead + Appointment to Supabase, queues GHL sync via outbox
+- Outbox `BookingCreated` handler: GHL contact + calendar appointment + opportunity + MOT note
+- Full task list: **`docs/TODO.md`**
 
 ### Placeholder content (must replace before deploy)
 - Dev fallback phone/address/email in Footer + Contact — guarded by `isProd`, won't render in prod
 - All trust claims (years, warranty, money-back) now env-driven — omitted if vars not set
-
-### Completeness: ~90%
-UI, forms, SEO files, service detail pages, and env-driven trust claims are done. Missing Strapi integration.
-
-## Strapi (apps/cms) status
-Strapi exists with content types:
-- Vehicle (collection)
-- Service (collection)
-- Site Settings (single)
-
-Sync skeleton:
-- `apps/cms/src/api/vehicle/services/auto-trader-sync.ts`
-- `apps/cms/config/cron-tasks.ts`
-- `apps/cms/src/lib/env.ts`
-
-Production setup docs:
-- Root: `docs/deployment/strapi-production-setup.md`
-- Inside cms: `apps/cms/docs/deployment/strapi-production-setup.md`
-
-Security intent:
-- Public role should be read-only (find/findOne) for required collections
-- Write operations only via Admin / API tokens
 
 ## car-sale (apps/car-sale) key notes
 - Still uses hardcoded vehicle data (`data/cars.ts`) via `services/cars.service.ts`
@@ -131,38 +125,35 @@ car-sale currently uses:
 - RESEND_API_KEY, EMAIL_FROM, EMAIL_TO, NEXT_PUBLIC_WHATSAPP_NUMBER
 
 services-web uses (see `.env.local.example`):
+- DATABASE_URL (Supabase Postgres)
 - RESEND_API_KEY, EMAIL_FROM, EMAIL_TO
 - NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_BUSINESS_NAME, NEXT_PUBLIC_BUSINESS_PHONE
 - NEXT_PUBLIC_BUSINESS_STREET, NEXT_PUBLIC_BUSINESS_CITY, NEXT_PUBLIC_BUSINESS_REGION
 - NEXT_PUBLIC_BUSINESS_POSTCODE, NEXT_PUBLIC_BUSINESS_COUNTRY
 - NEXT_PUBLIC_BUSINESS_LAT, NEXT_PUBLIC_BUSINESS_LNG
+- DVLAAPI_KEY (DVLA vehicle lookup)
+- DVSA_CLIENT_ID, DVSA_CLIENT_SECRET, DVSA_TOKEN_URL, DVSA_SCOPE, DVSA_ENABLED
+- GHL_PRIVATE_KEY, GHL_LOCATION_ID, GHL_PIPELINE_ID, GHL_STAGE_ID_NEW
+- GHL_SERVICES_PIPELINE_ID, GHL_STAGE_ID_BOOKED (confirmed booking pipeline)
+- GHL_CAL_FULL_SERVICE, GHL_CAL_INTERIM_SERVICE, GHL_CAL_MOT_TESTING (GHL calendar IDs)
+- GHL_CAL_BRAKE_REPAIRS, GHL_CAL_TYRE_FITTING, GHL_CAL_DIAGNOSTICS
+- GARAGE_ADMIN_API_KEY (outbox route auth)
 - NEXT_PUBLIC_REVIEW_RATING, NEXT_PUBLIC_REVIEW_COUNT, NEXT_PUBLIC_REVIEW_BEST (optional)
 - NEXT_PUBLIC_HOURS_MON_FRI, NEXT_PUBLIC_HOURS_SAT, NEXT_PUBLIC_HOURS_SUN (optional)
 
-Strapi sync uses:
-- AUTO_TRADER_SYNC_ENABLED (true/false)
-- AUTO_TRADER_FEED_URL (pending)
-- AUTO_TRADER_SYNC_CRON (default */10 * * * *)
-- SOLD_VISIBLE_DAYS (default 30)
-- CORS_ORIGINS (comma-separated)
-
 ## What we must NOT do right now
+- Do not introduce Strapi or any CMS not defined in ARCHITECTURE.md
 - Do not build the Auto Trader parser until feed format/access exists
 - Do not refactor car-sale heavily or recreate it
 - Do not extract shared UI yet unless services-web needs it immediately
-- Do not add fake "X people viewing" or invented "happy customers" unless values come from Site Settings in Strapi
+- Do not add fake trust claims unless values come from verified sources or env vars
 
-## Next concrete work (finish services-web for deploy)
-1) Build `/services/[slug]` detail pages — individual service pages with full description, pricing guidance, and a book CTA
-2) Connect services data to Strapi — replace hardcoded `services/services.service.ts` with Strapi API calls (Service collection type already exists in CMS)
-3) Add `app/sitemap.ts` — generate sitemap from service slugs
-4) Add `app/robots.ts` — standard robots.txt allowing crawling
-5) Replace placeholder contact details — get real phone, address, email from client and update `contact/page.tsx`, `Footer.tsx`, `Hero.tsx`, and `.env.local.example`
-6) Fix Hero Google Rating — either make it env-driven (like JSON-LD already is) or remove until verified real
-7) Populate Strapi Service entries — add the 6 services (currently hardcoded) as CMS content
-8) Deploy to Netlify — create second Netlify site, configure env vars using `validate-prod.ts` safety net
-9) Test forms end-to-end — verify `/api/contact` and `/api/book` deliver emails with real Resend config
-10) Wire cross-site navigation — add link to car-sale from services nav and vice versa (simple href, not shared component yet)
+## Next concrete work
+See `docs/TODO.md` for the active task list. Current priority:
+1) **Apply confirmed-slot booking patch** (code changes 1-10 in TODO)
+2) **GHL calendar setup** (manual steps 11-14 in TODO — Marcus)
+3) **Database migration + seed** (steps 15-17 in TODO)
+4) **Test + deploy** (steps 18-26 in TODO)
 
 ## Deploy services-web to Netlify
 
@@ -204,10 +195,22 @@ This runs `validate:prod` (checks env vars for placeholders) then `next build`. 
 ## Phase alignment note
 `ARCHITECTURE.md` has the original phase order (services-web = Phase 5). This context pack reflects the priority decision to build services-web as Phase 3. **This context pack owns phase order and status. ARCHITECTURE.md owns rules, tokens, and constraints.**
 
+## Keeping this file up to date
+This file and `docs/TODO.md` must be updated as work progresses:
+- When a TODO item is completed, check it off in `docs/TODO.md`
+- When a phase status changes, update the phase section above
+- When new env vars are added, add them to the env vars section
+- When new features are built, update the "services-web detailed status" section
+- When architecture decisions change, update non-negotiables (but defer to `ARCHITECTURE.md`)
+
+**Claude:** After completing any task, update `docs/TODO.md` (check off items) and this file (status sections) before finishing.
+
 ## How Claude should be used (context control)
 When running tasks:
-- Always read ONLY:
-  - `docs/context-pack.md`
-  - the relevant decision doc
-  - the specific work-order doc for the task
-- Do not re-audit the repo unless asked.
+- Always read:
+  - `ARCHITECTURE.md` (system boundaries and rules)
+  - `docs/context-pack.md` (current state and status)
+  - `docs/TODO.md` (active task list)
+  - the relevant decision doc (if applicable)
+- Do not re-audit the repo unless asked
+- After completing work, update TODO.md and this file

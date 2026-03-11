@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Local Netlify folder
+.netlify
+
+# Prisma generated client (regenerated on build)
+apps/services-web/lib/generated/
+
+# Environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+
+# Archives
+*.zip
+
+# Build info
+tsconfig.tsbuildinfo

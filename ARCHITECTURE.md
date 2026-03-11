@@ -1,255 +1,291 @@
-check this first - # Auto Nation — Architecture Rules (Shipping Mode)
+# Auto Nation — System Architecture
 
-## Role
-You are a senior full-stack engineer + UI/UX designer shipping a production-ready automotive system fast.
+## Overview
 
-## Goal
-Build a modern automotive system with:
-- A car sales website (Next.js)
-- A services website (Next.js)
-- Shared CMS (Strapi on Railway)
-- Shared CRM + automations (GoHighLevel)
-- Auto Trader partner feed powering vehicle inventory
-- Sold vehicles remain on-site (archive) for SEO/social proof
+Auto Nation is a modern automotive platform composed of:
 
-## Apps & Systems
-- Strapi must run as a separate deployed service (not inside the Next.js apps)
-- `apps/car-sale` — Next.js App Router (vehicle sales) **EXISTS ALREADY**
-- `apps/services-web` — Next.js App Router (services)
-- `apps/cms` — Strapi (content + vehicle store) hosted on Railway + Postgres
-- GHL — external CRM (two pipelines: Sales + Services)
-- Netlify — hosts both Next.js sites (two Netlify sites)
+- two public websites
+- an internal garage dashboard
+- a shared database
+- external integrations for messaging, calendars, and vehicle data
+
+The system is designed so that **Supabase is the system of record**, while
+external systems provide specialised services such as messaging, scheduling,
+and workshop management.
 
 ---
 
-## Positioning & Tone (Locked)
-This business sells everyday cars and vans.
-Tone must be:
-- trustworthy, practical, and friendly
-- professional, clear pricing, straightforward CTAs
-- clean modern UI (premium build quality), but NOT “exclusive/elite/performance” language
-Visual quality is premium (gold accent, clean dark UI),
-but messaging must remain practical and trustworthy.
-Avoid “exclusive”, “elite”, or performance-only language.
+# Core Principles
 
+1. **Supabase is the source of truth**
+   All operational data must be stored in Supabase.
 
-## Truth & Trust Rules (Non-negotiable)
-- Do not invent trust claims, compliance badges, fake stats, or fake reviews
-- Only display real, verified trust items provided by the business
+2. **External platforms are service providers**
+   GHL, DVSA, and other APIs are integrations — not the primary data store.
 
----
+3. **Garage staff interact only with the Admin Dashboard**
+   Garage staff must not need access to GHL or other backend systems.
 
-## Theme & UI Consistency (Locked)
-- The services site MUST match the car-sale design theme.
-- Navigation and Footer must be shared components (single source of truth).
-- Extract shared shell into `packages/ui`:
-  - `Navigation`, `Footer`, `Container`, `Section`
-- Avoid premature abstraction beyond the shared shell.
+4. **Confirmed booking model**
+   Customers only see available slots and bookings are confirmed immediately.
+
+5. **Systems must degrade gracefully**
+   If external services fail (DVSA, GHL), the core booking flow must still work.
 
 ---
 
-## GHL Integration Contract
+# Applications
 
-All CRM logic and automation boundaries are defined in:
-`/GHL_INTERFACE_SPEC.md`
+## apps/car-sale
+Next.js App Router application.
 
-This file defines the data model, workflow contracts, and integration endpoints.
+Responsibilities:
+- vehicle listing pages
+- vehicle detail pages
+- vehicle enquiries
+- sales lead capture
 
-## Design System Tokens (Locked)
-
-Both `car-sale` and `services-web` MUST use identical design tokens.
-Tokens must be defined centrally (Tailwind config or shared theme file). Avoid hard-coded one-off styles.
-
---
-
-### Color Palette (Everyday Cars/Vans)
-Primary Background:
-- `--bg-primary: #111111`
-
-Secondary Background:
-- `--bg-secondary: #1A1A1A`
-
-Primary Text:
-- `--text-primary: #FAFAFA`
-
-Muted Text:
-- `--text-muted: #A1A1AA`
-
-Primary Accent (Brand Highlight)
-- `--accent-primary: #D4AF37` (Gold)
-
-Accent Hover:
-- Slightly darker gold (90% brightness)
-
-Borders:
-- `--border-default: #2A2A2A`
-
-Gold is used only for:
-- Primary CTAs
-- Important badges (e.g. SOLD, Featured)
-- Accent lines or highlights
-- Key pricing emphasis
-
-Gold must NOT be overused.
-
-### Typography
-Font:
-- Inter (300, 400, 600, 700, 900)
-
-Headings:
-- tight tracking
-- weights 600–900
-- strong size contrast for hierarchy
-
-Body:
-- 300–400
-- comfortable line-height
-
-### Radius & Spacing
-Border Radius:
-- Cards: `rounded-2xl`
-- Buttons: `rounded-xl`
-- Inputs: `rounded-xl`
-
-Spacing System:
-- Tailwind spacing scale (4px system)
-- Section padding: `py-16` mobile, `py-24` desktop where appropriate
-
-Shadows:
-- subtle dark shadows only
-- no colorful glow
-
-### Motion Rules
-- Framer Motion only when necessary
-- no excessive animation
-- transitions must feel subtle and professional
+Vehicle inventory originates from the Auto Trader partner feed.
 
 ---
 
-## Tech Rules (Locked)
-### Environment & Secrets
-- All credentials (Strapi tokens, GHL keys, email keys) must be stored in environment variables.
-- No secrets committed to the repository.
-- Each deployment target (Netlify, Railway) maintains its own env configuration.
+## apps/services-web
+Next.js App Router application.
 
-- Next.js App Router only (no Pages Router)
-- TypeScript required
-- Tailwind for styling
-- shadcn/ui allowed and preferred for primitives
-- Server Components by default; Client Components only when necessary
-- Netlify compatible (no Vercel-only assumptions)
+Responsibilities:
+- service information pages
+- booking system
+- vehicle lookup
+- DVSA MOT enrichment
+- service enquiries
 
----
-
-## Data & Integration Rules (Locked)
-
-### Vehicles (Auto Trader → Strapi)
-Vehicle images may initially be stored as external feed URLs.
-Media ingestion into Strapi is optional and may be introduced later if required.
-- Source: official Auto Trader partner feed/export
-- Sync frequency: every 10–15 minutes (default)
-- Vehicles stored in Strapi with:
-  - `status`: `live` | `sold`
-  - `externalId` (unique)
-  - `slug` (stable URL key)
-
-URL rules:
-- Vehicle detail route is `/cars/[slug]`
-- Slugs must be stable over time
-- Sold vehicle detail pages must remain accessible forever (no 404)
-
-Sold rules:
-- Never delete vehicles from Strapi.
-- If feed includes sold/status flag: mark sold on same sync run.
-- If no sold flag exists: missing vehicles are marked sold on next sync.
-
-### Sold visibility window + archive
-- Config: `SOLD_VISIBLE_DAYS` (default 30)
-- Sold vehicles remain in the main inventory list for `SOLD_VISIBLE_DAYS`.
-- After that, they move to a permanent Sold Archive page (`/sold`).
-- Vehicle detail pages remain accessible forever.
-
-### Featured Vehicles (CMS capability)
-- CMS must support selecting featured vehicles for homepage/spotlight.
-- Featured applies only to `status=live`.
-- Manual ordering required.
-- Fallback: newest live vehicles if none featured.
-
-### Content (Strapi)
-Public API access must be read-only and limited to required collections/fields.
-All write operations (sync, admin updates) require secure API token authentication.
-- Strapi stores:
-  - services content
-  - pages (about, finance, warranty, FAQs)
-  - testimonials/reviews content (if used and real)
-- Strapi does NOT replace CRM.
-
-### CRM (GHL)
-- One GHL sub-account for this business.
-- Two pipelines:
-  1) Vehicle Sales
-  2) Services
-- Enquiries from BOTH sites flow into GHL with:
-  - `lead_source`
-  - UTM parameters
-- Automations must be helpful and not spammy.
+Customers can select services and book available time slots.
 
 ---
 
-## UX Rules (Locked)
-- One primary CTA per section
-- Filters must be usable on mobile
-- Sticky enquiry CTA on car detail (mobile)
+## apps/garage-admin
+Internal Next.js dashboard used by garage staff.
 
-Sold vehicle UX:
-- clearly show SOLD label/badge
-- replace primary CTA with practical options:
-  - “Enquire about similar vehicles”
-  - “Get notified when a similar one arrives”
-  - “Call / WhatsApp us”
-- keep full specs + images + description for SEO
+Responsibilities:
 
----
+### Services
+- manage bookings
+- view daily schedule
+- track service pipeline
+- view vehicle MOT history
 
-## Strapi Modeling Ownership
-Strapi schema design (fields, content types, permissions) is handled by the Strapi agent.
-This document defines REQUIRED capabilities only.
+### Sales
+- manage vehicle sales pipeline
+- record deposits
+- track payment history
 
----
+### Communication
+- view conversations with customers
+- send messages (SMS / WhatsApp / Email)
 
-## Protect Existing car-sale Site (Critical)
-The `apps/car-sale` site already exists and is the baseline.
-
-DO NOT:
-- recreate car-sale from scratch
-- replace its folder structure
-- change its design direction drastically
-- remove existing pages/components unless explicitly requested
-
-ONLY:
-- refactor minimally when required for integration (Strapi feed, shared nav/footer)
-- preserve existing UX patterns and routes
-- make incremental changes with clear file diffs
-
-If any proposed change impacts existing behavior, list the impact first.
+Garage staff interact only with this system.
 
 ---
 
-## Before Coding (Critical Inputs)
-If any of these are missing, ASK FIRST:
-- Brand name + logo assets
-- WhatsApp yes/no and destination number
-- Finance yes/no and finance provider details (if any)
-- Contact destination (email + phone)
-- Trust items allowed (only real, verified)
-- Confirm Auto Trader feed access method + sample record availability
+# Database
 
-## Deployment Order (Locked)
+## Supabase (Postgres)
 
-Phase 0: Current State Map + Integration Plan + UI Consistency Audit (no code changes)
-Phase 1: Strapi setup (apps/cms)
-Phase 2: Feed sync logic
-Phase 3: Integrate car-sale with Strapi
-Phase 4: Extract shared UI
-Phase 5: Build services site
-Phase 6: GHL automation wiring
+Supabase is the **system of record** for the platform.
+
+Primary data stored:
+
+- leads
+- appointments
+- vehicles
+- MOT reports
+- conversations
+- payments
+- service catalog configuration
+- pipeline configuration
+
+All dashboards and websites read data from Supabase.
+
+External integrations must synchronise with Supabase.
+
+---
+
+# External Systems
+
+## GoHighLevel (GHL)
+
+GHL is used as an **automation and communications engine**.
+
+Responsibilities:
+
+- calendar availability
+- appointment reminders
+- messaging (SMS, WhatsApp, Email)
+- workflow automations
+
+Garage staff do **not** interact directly with GHL.
+
+The platform communicates with GHL through API integrations.
+
+---
+
+## DVSA MOT History API
+
+Used to enrich vehicle data with MOT history.
+
+Data retrieved:
+
+- MOT expiry
+- advisory counts
+- major faults
+- dangerous faults
+- mileage history
+
+DVSA failures must **never block bookings**.
+
+---
+
+## GDS Workshop
+
+Existing workshop management system used by the garage.
+
+Handles:
+
+- workshop job sheets
+- parts ordering
+- invoices
+- technician workflow
+
+Service payments are handled inside GDS and are **not processed by this platform**.
+
+---
+
+# Booking System
+
+The services platform uses a **confirmed slot model**.
+
+Customers see real availability and select a time slot.
+
+Booking flow:
+
+1. Customer selects service
+2. Customer selects vehicle type
+3. Available slots are retrieved from calendar
+4. Customer selects a slot
+5. Booking is created
+
+System actions:
+
+- appointment stored in Supabase
+- lead created in Supabase
+- GHL contact created/updated
+- GHL calendar appointment created
+- MOT history fetched from DVSA (best effort)
+
+Bookings immediately enter the **BOOKED stage**.
+
+---
+
+# Service Configuration
+
+Service durations are defined in a **service catalog**.
+
+Each service stores:
+
+- name
+- slug
+- duration by vehicle type
+- optional buffer time
+- associated calendar
+
+Example:
+service_catalog
+
+ - mot-testing
+
+ - full-service
+
+ - interim-service
+
+
+Vehicle types supported:
+
+- car
+- van
+
+Durations are configurable through the Admin Dashboard.
+
+---
+
+# Pipelines
+
+## Services Pipeline
+
+Stages:
+
+- BOOKED
+- IN_PROGRESS
+- COMPLETE
+- CANCELLED
+- NO_SHOW
+
+---
+
+## Sales Pipeline
+
+Stages:
+
+- NEW_VEHICLE_ENQUIRY
+- CONTACTED
+- VIEWING_BOOKED
+- DEPOSIT_TAKEN
+- DEAL_AGREED
+- SOLD
+- LEFT_REVIEW
+- LOST
+
+---
+
+# Payments
+
+Service payments are handled inside **GDS Workshop**.
+
+The platform does **not process service payments**.
+
+Vehicle sales may include:
+
+- deposit payments
+- full balance payments
+
+Payment records are stored in Supabase.
+
+Both online payments and manual payments can be recorded.
+
+---
+
+# Deployment
+
+## Hosting
+
+Websites:
+- Netlify
+
+Database:
+- Supabase
+
+Automations / messaging:
+- GoHighLevel
+
+Workshop software:
+- GDS Workshop (external)
+
+---
+
+# Deployment Order
+
+1. Supabase schema and database setup
+2. DVSA integration
+3. Booking system
+4. Garage Admin dashboard
+5. GHL integrations
+6. Sales payment system

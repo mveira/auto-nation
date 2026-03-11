@@ -39,10 +39,12 @@ export default function ContactPage() {
     setFormState("sending")
 
     const form = e.currentTarget
+    const rawVrm = (form.elements.namedItem("vrm") as HTMLInputElement).value
     const data = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
       email: (form.elements.namedItem("email") as HTMLInputElement).value,
       phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
+      vrm: rawVrm.toUpperCase().replace(/\s+/g, ""),
       message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
     }
 
@@ -142,6 +144,18 @@ export default function ContactPage() {
                   <div>
                     <label htmlFor="contact-phone" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Phone</label>
                     <Input id="contact-phone" name="phone" type="tel" placeholder="Phone number" required className="bg-black border-zinc-700 focus:border-primary h-12" />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-vrm" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Registration (VRM)</label>
+                    <Input
+                      id="contact-vrm"
+                      name="vrm"
+                      placeholder="e.g. AB12 CDE"
+                      required
+                      onChange={(e) => { e.target.value = e.target.value.toUpperCase() }}
+                      className="bg-black border-zinc-700 focus:border-primary h-12 font-bold tracking-widest text-lg uppercase"
+                      autoComplete="off"
+                    />
                   </div>
                   <div>
                     <label htmlFor="contact-message" className="block text-sm font-bold tracking-wide uppercase mb-1.5">Message</label>
